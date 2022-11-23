@@ -1,0 +1,63 @@
+.mat_dialog_image {
+    max-height: 95vh;
+    max-width: 95vw;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border: 0;
+    padding: 0px;
+    /*margin-left: auto;
+    margin-right: auto;
+    top: auto;
+    bottom: 0;*/
+    /*top: 50%;
+    left: 50%;*/
+    /*transform: translate(-50%, -50%);*/
+    /*position: absolute;*/
+    /*display: inline-block;
+    vertical-align: middle;*/
+}
+
+::ng-deep mat-dialog-container {
+    background-color: rgba(0,0,0,1.0) !important;
+    padding: 0px !important;
+}
+
+::ng-deep mat-dialog-container::-webkit-scrollbar {
+    width: 0;
+    background: transparent;
+}
+
+.overlay_container {
+    position: relative;
+    text-align: center;
+    display: inline;
+    justify-content: center;
+    align-items: center;
+}
+
+.mat_close_button {
+    position: fixed;
+    top: 2.5vh;
+    left: 91.7vw;
+    color: grey;
+    width: 5vw;
+    height: 5vw;
+    background-color: rgba(0, 0, 0, 0.1);
+    margin: 0px;
+    padding: 0px;
+    border: 0px;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.mat_close_button:hover {
+    color: lightgrey;
+    background-color: rgba(0, 0, 0, 0.5);
+
+}
+
+.mat_icon {
+    margin: 0px;
+    padding: 0px;
+}

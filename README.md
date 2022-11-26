@@ -73,4 +73,4 @@ If there is a CORS issue, add the header information as well underneath what you
 `add_header Access-Controll-Allow-Origin *;`
 
 # LICENSE
-MIT
+<a href="https://github.com/KT-Um/core_gallery/wiki/MIT-License">MIT</a>

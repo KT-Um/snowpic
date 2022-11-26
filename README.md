@@ -1,2 +1,2 @@
 # core_gallery
-Simple photo viewer
+Simple photo viewer based on nginx

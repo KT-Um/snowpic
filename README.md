@@ -1,6 +1,9 @@
 # core_gallery
 Simple photo viewer based on nginx
 
+<img src="https://user-images.githubusercontent.com/118874393/204101787-6bc6fa48-fd2e-4107-9fd6-54cdc7f0c886.jpg" width="700px" />
+<img src="https://user-images.githubusercontent.com/118874393/204101791-731f5684-e0c0-44a6-8823-0287780d2215.jpg" width="700px" />
+
 # Installation
 This is a Node.js app available through the npm registry.
 
@@ -51,11 +54,10 @@ Nginx will autoindex the Photo directory and create directories and files inform
 
 Add the following lines to nginx.conf or a conf file under sites-available.
 
-`server {
+```
+server {
   location / {
-    root [type here the directory where contains![screenshot-1](https://user-images.githubusercontent.com/118874393/204101787-6bc6fa48-fd2e-4107-9fd6-54cdc7f0c886.jpg)
-![screenshot-2](https://user-images.githubusercontent.com/118874393/204101791-731f5684-e0c0-44a6-8823-0287780d2215.jpg)
- index.html];
+    root [type here the directory where contains index.html];
   }
 
   location /Photo {
@@ -63,8 +65,12 @@ Add the following lines to nginx.conf or a conf file under sites-available.
     autoindex on;
     autoindex_format json;
   }
-}`
+}
+```
 
 If there is a CORS issue, add the header information as well underneath what you put above.
 
 `add_header Access-Controll-Allow-Origin *;`
+
+# LICENSE
+MIT

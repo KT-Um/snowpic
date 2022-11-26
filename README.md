@@ -1,5 +1,5 @@
 # core_gallery
-Simple photo viewer based on nginx
+Simple web photo viewer based on nginx
 
 <img src="https://user-images.githubusercontent.com/118874393/204101787-6bc6fa48-fd2e-4107-9fd6-54cdc7f0c886.jpg" width="700px" />
 <img src="https://user-images.githubusercontent.com/118874393/204101791-731f5684-e0c0-44a6-8823-0287780d2215.jpg" width="700px" />

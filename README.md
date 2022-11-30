@@ -1,43 +1,34 @@
 # snowpic
-Simple web photo viewer based on Nginx
+Simple web image viewer
 
-<img src="https://user-images.githubusercontent.com/118874393/204101787-6bc6fa48-fd2e-4107-9fd6-54cdc7f0c886.jpg" width="700px" />
-<img src="https://user-images.githubusercontent.com/118874393/204101791-731f5684-e0c0-44a6-8823-0287780d2215.jpg" width="700px" />
+<img src="https://user-images.githubusercontent.com/118874393/204802281-0cf713d2-bd8d-4638-b456-3f171e3fee11.jpg" width="700px" />
+<img src="https://user-images.githubusercontent.com/118874393/204802310-da857614-6705-4339-8462-c60771759442.jpg" width="700px" />
 
 # Installation
 This is a Node.js app available through the npm registry.
 
 Before installing, download and install Node.js.
 
-Installation is done using the npm install command:
+Installation is is easily done using the npm install command:
 
-`$ npm install coregallery`
+`$ npm i snowpic`
 
-You will probably see the coregallery directory in node-modules.
+The command probably downloads and installs snowpic under node_modules directory.
 
-You can leave or move it to somewhere else.
+You can leave snowpic there or move it to somewhere else.
 
-If you try to ng build in this stage, you will face an error - node-modules does not exist.
+# Web Server Configuration
 
-Run npm install in the coregallery directory to install node-modules.
+This web app is originally designed to work on Nginx, however, using Nginx is not mandatory.
 
-`$ npm install`
+But why Nginx?
 
-The last step is ng build in the directory generating the dist directory.
-
-`$ ng build`
-
-# Nginx Configuration
-
-This web app is simply designed to work on Nginx. But it is not mandatory.
-
-Why Nginx?
-
-Nginx provides autoindex that creates directories and files list including useful information such as names, type and so on as a json format.
+With a few config lines, Nginx provides autoindex that creates directories and files data list including useful information such as name, type and so on in the json format.
 
 - Properties: name, type, mtime, size
 
-- Example:
+- JSON Data Example:
+```
 [
 { "name":"node-modules", "type":"directory", "mtime":"Sat, 09 Apr 2019 08:51:52 GMT" },
 { "name":"dist", "type":"directory", "mtime":"Sat, 09 Apr 2020 08:52:27 GMT" },
@@ -45,30 +36,81 @@ Nginx provides autoindex that creates directories and files list including usefu
 { "name":"tools.zip", "type":"file", "mtime":"Sat, 16 Apr 2016 01:34:08 GMT", "size":121592817 },
 { "name":"package.json", "type":"file", "mtime":"Sat, 16 Apr 2016 01:33:25 GMT", "size":4470 },
 ]
+```
 
-Note that all the photos you want to broswe are under 'Photo' directory.
+Note that all the images you want to browse are placed under a certain directory.
 
-Make sure you move photos to Photo direcotry.
+Make sure you move all your images to a direcotry.
 
-Nginx will autoindex the Photo directory and create directories and files information.
+Nginx will autoindex the directory and create directories and files information.
 
-Add the following lines to nginx.conf or a conf file under sites-available.
+Add the following lines to nginx.conf or another conf file under sites-available.
 
 ```
 server {
   location / {
-    root [type here the directory where contains index.html];
+    root [type here the full path of directory where contains index.html];
   }
 
-  location /Photo {
-    root [type here the directory that has the Photo directory as a child];
+  location [type here the directory name that contains image files ] {
+    root [type here the full path directory excluding the last directory name];
     autoindex on;
     autoindex_format json;
   }
 }
 ```
 
-If there is a CORS issue, add the header information as well underneath what you put above.
+For example, if all your images are stored in the path of /media/storage/images, you want to set:
+
+```
+location /images {
+    root /media/storage;
+    autoindex on;
+    autoindex_format json;
+}
+```
+
+# Environment Configuration
+
+You need to set snowpic to know where to send a request to get directories and files data.
+
+Add these lines to env.ts file in assets directory.
+
+```
+export const IMAGE_LOCATION = {
+    "name": "images"
+}
+
+export const SERVER_ADDRESS = {
+    "address": "localhost"
+}
+
+export const PROTOCOL = {
+    "protocol": "http"
+}
+```
+
+IMAGE_LOCATION must match the location configuration of your web server above.
+
+Do not add '/' character before and after IMAGE_LOCATION.
+
+SERVER_ADDRESS means where you send a request to and get a response from.
+
+If your web server and image directory are under the same IP address, you can use localhost.
+
+Otherwise, type a specific IP address.
+
+PROTOCOL is either of http or https depending on your web server configuration.
+
+If you already set up SSL on the server, https is highly recommended. 
+
+# Supported Image Formats
+
+Currently, snowpic supports jpg, jpeg, png, and gif so far.
+
+# Issues
+
+If there is a CORS issue, add the header information as well underneath what you put in the web server configuration.
 
 `add_header Access-Controll-Allow-Origin *;`
 

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ImageShowDialogComponent, ImageSrc } from './image-show-dialog/image-show-dialog.component';
 import { ImageproviderService } from './imageprovider.service';
+import { APP_TITLE, SUPPORT_FORMAT } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -9,11 +10,14 @@ import { ImageproviderService } from './imageprovider.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  private readonly IMAGE_EXTENSIONS = /jpg|jpeg|png|gif|JPG|JPEG|PNG|GIF/;
+  private readonly IMAGE_EXTENSIONS;
   private _items: { name: string, type: string, date: string, src: string }[];
+  private readonly _title: string;
 
   constructor(private imageProvider: ImageproviderService, private dialog: MatDialog) {
     this._items = [];
+    this._title = APP_TITLE.title;
+    this.IMAGE_EXTENSIONS = SUPPORT_FORMAT.format;
   }
 
   public isTopDirectory(): boolean {
@@ -30,6 +34,10 @@ export class AppComponent implements OnInit {
 
   public get count(): number {
     return this._items.length;
+  }
+
+  public get title(): string {
+    return this._title;
   }
 
   private onRetrieve = (contents: any) => {
@@ -80,10 +88,10 @@ export class AppComponent implements OnInit {
     const imageSrc: ImageSrc = { src: this.getImageURL(imageName) };
     const dialogRef = this.dialog.open(ImageShowDialogComponent, {
       data: imageSrc,
-      width: '95vw',
-      height: '95vh',
-      maxWidth: '95vw',
-      maxHeight: '95vh',
+      width: '100vw',
+      height: '100vh',
+      maxWidth: '100vw',
+      maxHeight: '100vh',
     });
   }
 }

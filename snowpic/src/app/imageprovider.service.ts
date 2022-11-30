@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, throwError, map } from 'rxjs';
+import { PROTOCOL, SERVER_ADDRESS, IMAGE_LOCATION } from '../assets/env';
 
 export interface ContentList {
   name: string;
@@ -17,9 +17,7 @@ const OPTIONS = {
 }
 
 const URLS = {
-  'url': 'http://192.168.0.50/Photo/',
-  'fileformat': 'jpg',
-  'dateformat': 'yyyy-mm-dd'
+  'url': `${PROTOCOL.protocol}://${SERVER_ADDRESS.address}/${IMAGE_LOCATION.name}`
 }
 
 @Injectable({

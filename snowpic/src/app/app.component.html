@@ -1,0 +1,39 @@
+<div class="main">
+  <div class="flex-nowrap-container">
+    <img src="/assets/img/logo.svg" class="home" />
+    <span class="title">{{title}}</span>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <div class="path">
+    <mat-icon class="path-icon">keyboard_arrow_right</mat-icon>
+    <span class="path-info">{{currentPath}}</span>
+    <span class="total">total:{{count}}</span>
+  </div>
+
+  <div *ngIf="!isLoading" clearfix>
+    <div *ngIf="!isTopDirectory()" class="flex-nowrap-container">
+      <div class="icons">
+        <mat-icon class="icon">folder_open</mat-icon>
+        <mat-icon class="icon layerd-icon">keyboard_arrow_up</mat-icon>
+      </div>
+      <button mat-flat-button (click)="exploreOut()" class="button">.&nbsp;.</button>
+    </div>
+
+    <div *ngFor="let item of items; index as i" [ngSwitch]="item.type">
+      <div *ngSwitchCase="'directory'" class="flex-nowrap-container">
+        <mat-icon class="icon">folder</mat-icon>
+        <button mat-flat-button (click)="exploreIn(item.name)" class="button">{{item.name}}</button>
+      </div>
+      <div *ngSwitchCase="'file'" class="flex-nowrap-container">
+        <img [src]="item.src" class="thumbnail" rounded thumbnail>
+        <button mat-flat-button (click)="showImage(item.name)" class="button">{{item.name}}</button>
+      </div>
+    </div>
+  </div>
+
+  <ng-container *ngIf="isLoading">
+    <mat-spinner [diameter]="50" class="spinner"></mat-spinner>
+  </ng-container>
+</div>

@@ -14,3 +14,11 @@ export const environment = {
  * on performance if an error is thrown.
  */
 // import 'zone.js/plugins/zone-error';  // Included with Angular CLI.
+
+export const APP_TITLE = {
+  "title": "snowpic"
+};
+
+export const SUPPORT_FORMAT = {
+  "format": /jpg|jpeg|png|gif|JPG|JPEG|PNG|GIF/
+};

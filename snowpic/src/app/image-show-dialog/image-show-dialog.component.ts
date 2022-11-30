@@ -18,7 +18,7 @@ export class ImageShowDialogComponent implements AfterViewInit {
   constructor(@Inject(MAT_DIALOG_DATA) private data: ImageSrc) {
     this._src = data.src;
     this._isDialogOpened = false;
-    setTimeout(()=>{this.isDialogOpened = true;}, 200);
+    setTimeout(()=>{this.isDialogOpened = true;}, 300);
   }
 
   ngAfterViewInit(): void {

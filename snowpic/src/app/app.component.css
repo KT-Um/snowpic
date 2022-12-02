@@ -102,3 +102,13 @@
     top: 50%;
     left: 50%;
 }
+
+.list {
+    padding: 0px;
+    margin: 0px;
+}
+
+.list-item {
+    padding: 0px;
+    margin: -10px;
+}

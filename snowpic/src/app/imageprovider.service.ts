@@ -17,7 +17,7 @@ const OPTIONS = {
 }
 
 const URLS = {
-  'url': `${PROTOCOL.protocol}://${SERVER_ADDRESS.address}/${IMAGE_LOCATION.name}`
+  'url': `${PROTOCOL.protocol}://${SERVER_ADDRESS.address}/${IMAGE_LOCATION.name}/`
 }
 
 @Injectable({
@@ -45,14 +45,17 @@ export class ImageproviderService {
     this.getDirectoriesAndFiles(onRetrieve, URLS.url);
   }
 
-  public exploreIn(onRetrieve: Function, newPath: string): void {
+  public exploreIn(onRetrieve: Function, newPath: string): string {
     this.paths.push(newPath);
     this.getDirectoriesAndFiles(onRetrieve, URLS.url.concat(this.getPathToString()));
+    return this.paths[this.paths.length - 1];
   }
 
-  public exploreOut(onRetrieve: Function): void {
-    this.paths.pop();
+  public exploreOut(onRetrieve: Function): string {
+    const pastPath = this.paths.pop();
     this.getDirectoriesAndFiles(onRetrieve, URLS.url.concat(this.getPathToString()));
+    return pastPath ? pastPath : '';
+    //return this.paths[this.paths.length - 1];
   }
 
   private getDirectoriesAndFiles(onRetrieve: Function, url: string): void {

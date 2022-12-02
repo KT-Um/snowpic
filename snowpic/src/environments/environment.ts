@@ -19,6 +19,6 @@ export const APP_TITLE = {
   "title": "snowpic"
 };
 
-export const SUPPORT_FORMAT = {
+export const SUPPORTED_FORMAT = {
   "format": /jpg|jpeg|png|gif|JPG|JPEG|PNG|GIF/
 };

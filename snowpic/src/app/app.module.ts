@@ -14,11 +14,13 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ImageShowDialogComponent } from './image-show-dialog/image-show-dialog.component';
+import { AutoScrollDirective } from './autoscroll.directive';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ImageShowDialogComponent
+    ImageShowDialogComponent,
+    AutoScrollDirective
   ],
   imports: [
     BrowserModule,

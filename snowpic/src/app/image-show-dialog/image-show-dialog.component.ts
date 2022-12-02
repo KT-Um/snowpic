@@ -6,7 +6,7 @@ export interface ImageSrc {
 }
 
 @Component({
-  selector: 'cg-image-show-dialog',
+  selector: 'sp-image-show-dialog',
   templateUrl: './image-show-dialog.component.html',
   styleUrls: ['./image-show-dialog.component.css']
 })

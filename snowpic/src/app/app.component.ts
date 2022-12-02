@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ImageShowDialogComponent, ImageSrc } from './image-show-dialog/image-show-dialog.component';
 import { ImageproviderService } from './imageprovider.service';
-import { APP_TITLE, SUPPORT_FORMAT } from '../environments/environment';
+import { APP_TITLE, SUPPORTED_FORMAT } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -13,11 +13,13 @@ export class AppComponent implements OnInit {
   private readonly IMAGE_EXTENSIONS;
   private _items: { name: string, type: string, date: string, src: string }[];
   private readonly _title: string;
+  private _pastPath: string;
 
   constructor(private imageProvider: ImageproviderService, private dialog: MatDialog) {
     this._items = [];
     this._title = APP_TITLE.title;
-    this.IMAGE_EXTENSIONS = SUPPORT_FORMAT.format;
+    this.IMAGE_EXTENSIONS = SUPPORTED_FORMAT.format;
+    this._pastPath = '';
   }
 
   public isTopDirectory(): boolean {
@@ -38,6 +40,10 @@ export class AppComponent implements OnInit {
 
   public get title(): string {
     return this._title;
+  }
+
+  public get pastPath(): string {
+    return this._pastPath;
   }
 
   private onRetrieve = (contents: any) => {
@@ -63,16 +69,17 @@ export class AppComponent implements OnInit {
   }
 
   public exploreOut(): void {
-    this.imageProvider.exploreOut(this.onRetrieve);
+    this._pastPath = this.imageProvider.exploreOut(this.onRetrieve);
   }
 
   private isImageFile(imageName: string): boolean {
     const extension = imageName.substring(imageName.lastIndexOf('.') + 1, imageName.length);
-    const match = extension.match(this.IMAGE_EXTENSIONS);
-    if (match) {
+
+    if (extension.match(this.IMAGE_EXTENSIONS)) {
       return true;
+    } else {
+      return false;
     }
-    return false;
   }
 
   public get isLoading(): boolean {

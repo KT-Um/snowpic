@@ -44,7 +44,7 @@
 .close-button:hover {
     color: lightgrey;
     background-color: rgba(0, 0, 0, 0.8);
-    transition: 1000ms;
+    transition: 800ms;
 
 }
 

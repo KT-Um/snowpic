@@ -1,6 +1,6 @@
 <div class="main">
   <div class="flex-nowrap-container">
-    <img src="/assets/img/logo.svg" class="home" />
+    <img src="/assets/img/logo.svg" class="home" (click)="home()" />
     <span class="title">{{title}}</span>
   </div>
 
@@ -30,7 +30,7 @@
       </ng-container>
       <mat-list-item *ngSwitchCase="'file'" class="flex-nowrap-container list-item">
         <img [src]="item.src" class="thumbnail" rounded thumbnail>
-        <button mat-flat-button (click)="showImage(item.name)" class="button">{{item.name}}</button>
+        <button mat-flat-button (click)="showContent(item.name)" class="button">{{item.name}}</button>
       </mat-list-item>
     </ng-container>
   </mat-list>

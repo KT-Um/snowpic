@@ -3,8 +3,7 @@ export const IMAGE_LOCATION = {
 }
 
 export const SERVER_ADDRESS = {
-    //"address": "localhost"
-    "address": "192.168.0.50"
+    "address": "localhost"
 }
 
 export const PROTOCOL = {

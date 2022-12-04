@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ImageShowDialogComponent, ImageSrc } from './image-show-dialog/image-show-dialog.component';
-import { ImageproviderService } from './imageprovider.service';
+import { ContentShowDialogComponent } from './content-show-dialog/content-show-dialog.component';
+import { ContentsProviderService, Content } from './contentsprovider.service';
 import { APP_TITLE, SUPPORTED_FORMAT } from '../environments/environment';
 
 @Component({
@@ -11,23 +11,37 @@ import { APP_TITLE, SUPPORTED_FORMAT } from '../environments/environment';
 })
 export class AppComponent implements OnInit {
   private readonly IMAGE_EXTENSIONS;
-  private _items: { name: string, type: string, date: string, src: string }[];
+  private _items: Content[];
   private readonly _title: string;
   private _pastPath: string;
 
-  constructor(private imageProvider: ImageproviderService, private dialog: MatDialog) {
-    this._items = [];
+  constructor(private contentsProvider: ContentsProviderService, private dialog: MatDialog) {
     this._title = APP_TITLE.title;
     this.IMAGE_EXTENSIONS = SUPPORTED_FORMAT.format;
+    this._items = [];
     this._pastPath = '';
   }
 
+  ngOnInit(): void {
+    this.contentsProvider.accessTopDirectory(this.onRetrieve);
+  }
+
+  private init(): void {
+    this._items = [];
+    this._pastPath = '';
+  }
+
+  public home(): void {
+    this.init();
+    this.contentsProvider.accessTopDirectory(this.onRetrieve);
+  }
+
   public isTopDirectory(): boolean {
-    return this.imageProvider.isNowTopDirectory();
+    return this.contentsProvider.isNowTopDirectory();
   }
 
   public get currentPath(): string {
-    return this.imageProvider.getCurrentPath();
+    return this.contentsProvider.getCurrentPath();
   }
 
   public get items(): { name: string, type: string, src: string }[] {
@@ -46,12 +60,11 @@ export class AppComponent implements OnInit {
     return this._pastPath;
   }
 
-  private onRetrieve = (contents: any) => {
+  private onRetrieve = (contents: Content[]) => {
     this._items = [];
-    contents.forEach((content: any) => {
+    contents.forEach((content: Content) => {
       if (content.type === 'file') {
         if (this.isImageFile(content.name)) {
-          content.src = this.getImageURL(content.name);
           this._items.push(content);
         }
       } else {
@@ -60,16 +73,12 @@ export class AppComponent implements OnInit {
     });
   };
 
-  ngOnInit(): void {
-    this.imageProvider.accessTopDirectory(this.onRetrieve);
-  }
-
   public exploreIn(newPath: string): void {
-    this.imageProvider.exploreIn(this.onRetrieve, newPath);
+    this.contentsProvider.exploreIn(this.onRetrieve, newPath);
   }
 
   public exploreOut(): void {
-    this._pastPath = this.imageProvider.exploreOut(this.onRetrieve);
+    this._pastPath = this.contentsProvider.exploreOut(this.onRetrieve);
   }
 
   private isImageFile(imageName: string): boolean {
@@ -83,18 +92,15 @@ export class AppComponent implements OnInit {
   }
 
   public get isLoading(): boolean {
-    return this.imageProvider.isLoading();
+    return this.contentsProvider.isLoading();
   }
 
-  private getImageURL(imageName: string): string {
-    return this.imageProvider.url.concat(this.currentPath, imageName);
-  }
-
-  public showImage(imageName: string) {
+  public showContent(contentName: string): void {
     this.currentPath;
-    const imageSrc: ImageSrc = { src: this.getImageURL(imageName) };
-    const dialogRef = this.dialog.open(ImageShowDialogComponent, {
-      data: imageSrc,
+    const content: Content | undefined = this.contentsProvider.getContent(contentName);
+
+    const dialogRef = this.dialog.open(ContentShowDialogComponent, {
+      data: content,
       width: '100vw',
       height: '100vh',
       maxWidth: '100vw',

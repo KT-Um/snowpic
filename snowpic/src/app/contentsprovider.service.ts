@@ -1,8 +1,17 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { PROTOCOL, SERVER_ADDRESS, IMAGE_LOCATION } from '../assets/env';
 
-export interface ContentList {
+export interface Content {
+  name: string;
+  type: string;
+  mtime: any;
+  src: string;
+  nextContent: Content | undefined;
+  previousContent: Content | undefined;
+}
+
+export interface ContentDataResponse {
   name: string;
   type: string;
   mtime: any;
@@ -23,13 +32,15 @@ const URLS = {
 @Injectable({
   providedIn: 'root'
 })
-export class ImageproviderService {
+export class ContentsProviderService {
   private paths: string[];
   private isLoadingFinished: boolean;
+  private contentDataList: Content[];
 
   constructor(private http: HttpClient) {
     this.paths = [];
     this.isLoadingFinished = false;
+    this.contentDataList = [];
   }
 
   private getPathToString(): string {
@@ -45,6 +56,11 @@ export class ImageproviderService {
     this.getDirectoriesAndFiles(onRetrieve, URLS.url);
   }
 
+  private initContentData(): void {
+    this.contentDataList = [];
+    this.isLoadingFinished = false;
+  }
+
   public exploreIn(onRetrieve: Function, newPath: string): string {
     this.paths.push(newPath);
     this.getDirectoriesAndFiles(onRetrieve, URLS.url.concat(this.getPathToString()));
@@ -55,15 +71,35 @@ export class ImageproviderService {
     const pastPath = this.paths.pop();
     this.getDirectoriesAndFiles(onRetrieve, URLS.url.concat(this.getPathToString()));
     return pastPath ? pastPath : '';
-    //return this.paths[this.paths.length - 1];
   }
 
   private getDirectoriesAndFiles(onRetrieve: Function, url: string): void {
-    this.isLoadingFinished = false;
-    this.http.get<ContentList>(url, OPTIONS).subscribe({
-      next: response => {
+    this.initContentData();
+    this.http.get<ContentDataResponse>(url, OPTIONS).subscribe({
+      next: (response: HttpResponse<ContentDataResponse>) => {
         if (response.status === 200) {
-          onRetrieve(response.body);
+          const contentData: any = response.body;
+          if (contentData) {
+            const currentPath = this.getCurrentPath();
+
+            contentData.forEach((content: ContentDataResponse, index: number) => {
+              this.contentDataList.push({
+                name: content.name,
+                type: content.type,
+                mtime: content.mtime,
+                src: this.getContentPath(content.name, currentPath),
+                nextContent: undefined,
+                previousContent: undefined
+              });
+            });
+
+            for (let i = 0; i < this.contentDataList.length; i++) {
+              this.contentDataList[i].nextContent ??= this.contentDataList[i + 1];
+              this.contentDataList[i].previousContent ??= this.contentDataList[i - 1];
+            }
+          }
+          
+          onRetrieve(this.contentDataList.slice());
         }
       },
       error: err => { },
@@ -83,6 +119,21 @@ export class ImageproviderService {
     if (this.paths.length === 0)
       return '/';
     return `/${this.getPathToString()}`;
+  }
+
+  public getContent(contentName: string): Content | undefined {
+    for (let i = 0; i < this.contentDataList.length; i++) {
+      if (this.contentDataList[i].name === contentName) {
+        return this.contentDataList[i];
+      }
+    }
+    
+    return undefined;
+  }
+
+  public getContentPath(contentName: string, path?: string): string {
+    if (!path) path = this.getCurrentPath();
+    return this.url.concat(path, contentName);
   }
 
   public get url(): string {

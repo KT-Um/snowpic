@@ -1,0 +1,23 @@
+<ng-container *ngIf="!isEmptyContent; else nocontent">
+    <div class="dialog" contenteditable="true" (keydown)="onKeyDown($event)">
+        <img [src]="src" class="content" />
+        <button mat-dialog-close class="close-button" *ngIf="isDialogOpened">
+            <mat-icon class="close-icon">close</mat-icon>
+        </button>
+    </div>
+</ng-container>
+
+<ng-template #nocontent>
+    <div class="dialog" contenteditable="false" (keydown)="onKeyDown($event)">
+        <div class="nocontent">
+            <div class="warning">
+                <mat-icon class="icon">sentiment_very_dissatisfied</mat-icon>
+                <span class="head">Sorry, nothing's here</span>
+                <span class="body">Maybe go back and try another?</span>
+            </div>
+        </div>
+        <button mat-dialog-close class="close-button" *ngIf="isDialogOpened">
+            <mat-icon class="close-icon">close</mat-icon>
+        </button>
+    </div>
+</ng-template>

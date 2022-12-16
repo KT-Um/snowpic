@@ -47,20 +47,6 @@
     width: 100%;
 }
 
-.home {
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    border: 0px;
-    margin: 5px;
-}
-
-.title {
-    color: cornflowerblue;
-    font-size: large;
-    font-weight: bold;
-}
-
 .thumbnail {
     width: 24px;
     height: 24px;
@@ -69,7 +55,7 @@
 .button {
     display: block;
     width: 100%;
-    background-color: white;
+    background-color: transparent;
     text-align: left;
     margin: 0px;
     padding: 0px;

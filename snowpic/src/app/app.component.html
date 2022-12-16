@@ -1,10 +1,5 @@
 <div class="main">
-  <div class="flex-nowrap-container">
-    <img src="/assets/img/logo.svg" class="home" (click)="home()" />
-    <span class="title">{{title}}</span>
-  </div>
-
-  <mat-divider></mat-divider>
+  <sp-app-title-bar></sp-app-title-bar>
 
   <div class="path">
     <mat-icon class="path-icon">keyboard_arrow_right</mat-icon>
@@ -23,7 +18,7 @@
 
     <ng-container *ngFor="let item of items; index as i" [ngSwitch]="item.type">
       <ng-container *ngSwitchCase="'directory'">
-        <mat-list-item class="flex-nowrap-container list-item" [autoscroll]="pastPath === item.name ? true : false">
+        <mat-list-item class="flex-nowrap-container list-item" [autoscroll]="pastPath === item.name">
           <mat-icon class="icon">folder</mat-icon>
           <button mat-flat-button (click)="exploreIn(item.name)" class="button">{{item.name}}</button>
         </mat-list-item>

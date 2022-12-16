@@ -23,7 +23,7 @@ describe('AppComponent', () => {
   it(`should have as title 'coregallery'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('coregallery');
+    expect(app.appName).toEqual('coregallery');
   });
 
   it('should render title', () => {

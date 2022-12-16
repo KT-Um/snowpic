@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ContentShowDialogComponent } from './content-show-dialog/content-show-dialog.component';
-import { ContentsProviderService, Content } from './contentsprovider.service';
-import { APP_TITLE, SUPPORTED_FORMAT } from '../environments/environment';
+import { ContentsControllerService, Content } from './contentscontroller.service';
+import { Environment, EnvironmentLoaderService } from './environmentloader.service';
 
 @Component({
   selector: 'app-root',
@@ -10,38 +10,58 @@ import { APP_TITLE, SUPPORTED_FORMAT } from '../environments/environment';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  private readonly IMAGE_EXTENSIONS;
+  private supportedFormats: RegExp | undefined;
+  private NO_MATCH: RegExp = new RegExp('');
+  private NO_APP_NAME: string = '';
+
   private _items: Content[];
-  private readonly _title: string;
+  private _appName: string | undefined;
   private _pastPath: string;
 
-  constructor(private contentsProvider: ContentsProviderService, private dialog: MatDialog) {
-    this._title = APP_TITLE.title;
-    this.IMAGE_EXTENSIONS = SUPPORTED_FORMAT.format;
+  constructor(private contentsController: ContentsControllerService, private dialog: MatDialog, private environmentLoader: EnvironmentLoaderService) {    
     this._items = [];
     this._pastPath = '';
   }
 
-  ngOnInit(): void {
-    this.contentsProvider.accessTopDirectory(this.onRetrieve);
-  }
+  ngOnInit() {
+    this.environmentLoader.load((env: Environment) => {
+      if (!env.appName) throw new Error("App title info is not loaded.");
+      if (!env.supportedForamts) throw new Error("Supported formats info is not loaded.");
+      
+      this._appName = env.appName;
+      this.supportedFormats = new RegExp(env.supportedForamts);
+    });
 
-  private init(): void {
-    this._items = [];
-    this._pastPath = '';
+    this.contentsController.ready(() => {
+      this.home();
+    });
+
+    //Test code
+    setTimeout(() => {
+      //this.exploreIn("2011/2011-04-16(양재천)");
+    }, 500);
+
+    setTimeout(() => {
+      //this.showContent("DSC_0076.JPG");
+      //this.showContent("DSC_0056.JPG");
+      //this.showContent("DSC_0068.JPG");
+    }, 500);
+    //http://192.168.0.16/Photo/2011/2011-04-16(양재천)/DSC_0061.JPG
+    //http://192.168.0.16/Photo/2011/2011-04-16(양재천)/DSC_0068.JPG
   }
 
   public home(): void {
-    this.init();
-    this.contentsProvider.accessTopDirectory(this.onRetrieve);
+    this._items = [];
+    this._pastPath = '';
+    this.contentsController.accessTopDirectory(this.onRetrieve);
   }
 
   public isTopDirectory(): boolean {
-    return this.contentsProvider.isNowTopDirectory();
+    return this.contentsController.isNowTopDirectory();
   }
 
   public get currentPath(): string {
-    return this.contentsProvider.getCurrentPath();
+    return this.contentsController.getCurrentPath();
   }
 
   public get items(): { name: string, type: string, src: string }[] {
@@ -52,8 +72,8 @@ export class AppComponent implements OnInit {
     return this._items.length;
   }
 
-  public get title(): string {
-    return this._title;
+  public get appName(): string {
+    return this._appName ? this._appName : this.NO_APP_NAME;
   }
 
   public get pastPath(): string {
@@ -74,17 +94,17 @@ export class AppComponent implements OnInit {
   };
 
   public exploreIn(newPath: string): void {
-    this.contentsProvider.exploreIn(this.onRetrieve, newPath);
+    this.contentsController.exploreIn(this.onRetrieve, newPath);
   }
 
   public exploreOut(): void {
-    this._pastPath = this.contentsProvider.exploreOut(this.onRetrieve);
+    this._pastPath = this.contentsController.exploreOut(this.onRetrieve);
   }
 
   private isImageFile(imageName: string): boolean {
     const extension = imageName.substring(imageName.lastIndexOf('.') + 1, imageName.length);
 
-    if (extension.match(this.IMAGE_EXTENSIONS)) {
+    if (extension.match(this.supportedFormats ? this.supportedFormats : this.NO_MATCH)) {
       return true;
     } else {
       return false;
@@ -92,19 +112,24 @@ export class AppComponent implements OnInit {
   }
 
   public get isLoading(): boolean {
-    return this.contentsProvider.isLoading();
+    return this.contentsController.isLoading();
   }
 
   public showContent(contentName: string): void {
-    this.currentPath;
-    const content: Content | undefined = this.contentsProvider.getContent(contentName);
+    let width, height, maxWidth, maxHeight;
+    this.environmentLoader.load((env: Environment) => {
+      width = env.contentWidth;
+      height = env.contentHeight;
+      maxWidth = env.contentMaxWidth;
+      maxHeight = env.contentMaxHeight;
+    });
 
     const dialogRef = this.dialog.open(ContentShowDialogComponent, {
-      data: content,
-      width: '100vw',
-      height: '100vh',
-      maxWidth: '100vw',
-      maxHeight: '100vh',
+      data: this.contentsController.findContent(contentName),
+      width: width,
+      height: height,
+      maxWidth: maxWidth,
+      maxHeight: maxHeight,
     });
   }
 }

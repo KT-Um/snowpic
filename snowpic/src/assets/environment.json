@@ -1,0 +1,22 @@
+[
+    {
+        "category": "server",
+        "image_location": "Photo",
+        "server_address": "192.168.0.24",
+        "protocol": "http"
+    },
+    {
+        "category": "app",
+        "app_name": "snowpic",
+        "app_title_bar": "true",
+        "supported_formats" : "jpg|jpeg|png|gif|JPG|JPEG|PNG|GIF|mp4|MP4",
+        "dialog" : {
+            "dialog_close_button": "true",
+            "content_width": "100vw",
+            "content_height": "100vh",
+            "content_max_width": "100vw",
+            "content_max_height": "100vh",
+            "content_preview_list": "false"
+        }
+    }
+]

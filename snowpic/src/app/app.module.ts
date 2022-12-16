@@ -11,16 +11,21 @@ import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ContentShowDialogComponent } from './content-show-dialog/content-show-dialog.component';
+import { EnvironmentLoaderService } from './environmentloader.service';
+
 import { AutoScrollDirective } from './autoscroll.directive';
-import { ContentsProviderService } from './contentsprovider.service';
+import { ContentsControllerService } from './contentscontroller.service';
+import { AppTitleBarComponent } from './app-title-bar/app-title-bar.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ContentShowDialogComponent,
-    AutoScrollDirective
+    AutoScrollDirective,
+    AppTitleBarComponent
   ],
   imports: [
     BrowserModule,
@@ -33,9 +38,13 @@ import { ContentsProviderService } from './contentsprovider.service';
     MatDividerModule,
     MatDialogModule,
     MatProgressSpinnerModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    MatSnackBarModule
   ],
-  providers: [ContentsProviderService],
+  providers: [
+    EnvironmentLoaderService,
+    ContentsControllerService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

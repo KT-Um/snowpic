@@ -13,8 +13,17 @@ export class AutoScrollDirective implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (this.autoscroll) {
-      this.elementRef.nativeElement.scrollIntoView(this.autoscroll);
+      this.elementRef.nativeElement.scrollIntoView({
+        behavior: "auto",
+        block: 'start',
+        inline: 'start'
+      });
+
+      /*this.elementRef.nativeElement.scrollIntoView({
+        behavior: "auto",
+        block: 'center',
+        inline: 'center'
+      });*/
     }
   }
-
 }

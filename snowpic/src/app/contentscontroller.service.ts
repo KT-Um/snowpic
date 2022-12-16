@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { PROTOCOL, SERVER_ADDRESS, IMAGE_LOCATION } from '../assets/env';
+import { Environment, EnvironmentLoaderService } from './environmentloader.service';
 
 export interface Content {
   name: string;
   type: string;
-  mtime: any;
+  mtime: string;
   src: string;
   nextContent: Content | undefined;
   previousContent: Content | undefined;
@@ -14,10 +14,10 @@ export interface Content {
 export interface ContentDataResponse {
   name: string;
   type: string;
-  mtime: any;
+  mtime: string;
 }
 
-const OPTIONS = {
+const HTTP_OPTIONS = {
   observe: 'response' as const,
   responseType: 'json' as const,
   headers: {
@@ -25,22 +25,39 @@ const OPTIONS = {
   }
 }
 
-const URLS = {
-  'url': `${PROTOCOL.protocol}://${SERVER_ADDRESS.address}/${IMAGE_LOCATION.name}/`
-}
-
 @Injectable({
   providedIn: 'root'
 })
-export class ContentsProviderService {
+export class ContentsControllerService {
   private paths: string[];
   private isLoadingFinished: boolean;
   private contentDataList: Content[];
+  private apiUrl: string;
+  private readonly ASSETS_URL: string = './assets/environment.json';
+  private isReadyToUse: boolean;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private environmentLoader: EnvironmentLoaderService) {
     this.paths = [];
     this.isLoadingFinished = false;
     this.contentDataList = [];
+    this.apiUrl = '';
+    this.isReadyToUse = false;
+  }
+
+  public async ready(onReady: Function) {
+    if (this.isReadyToUse) {
+      onReady();
+      return
+    }
+
+    await this.environmentLoader.load((env: Environment) => {
+      if (!env.apiUrl) throw new Error("API URL is not defined yet. Loading failed.");
+      this.apiUrl = env.apiUrl;
+    });
+
+    if (this.apiUrl === '') throw new Error("API URL is not defined yet.");
+    this.isReadyToUse = true;
+    onReady();
   }
 
   private getPathToString(): string {
@@ -53,29 +70,26 @@ export class ContentsProviderService {
 
   public accessTopDirectory(onRetrieve: Function): void {
     this.paths = [];
-    this.getDirectoriesAndFiles(onRetrieve, URLS.url);
-  }
-
-  private initContentData(): void {
-    this.contentDataList = [];
-    this.isLoadingFinished = false;
+    this.getDirectoriesAndFiles(onRetrieve, this.apiUrl);
   }
 
   public exploreIn(onRetrieve: Function, newPath: string): string {
     this.paths.push(newPath);
-    this.getDirectoriesAndFiles(onRetrieve, URLS.url.concat(this.getPathToString()));
+    this.getDirectoriesAndFiles(onRetrieve, this.apiUrl.concat(this.getPathToString()));
     return this.paths[this.paths.length - 1];
   }
 
   public exploreOut(onRetrieve: Function): string {
     const pastPath = this.paths.pop();
-    this.getDirectoriesAndFiles(onRetrieve, URLS.url.concat(this.getPathToString()));
+    this.getDirectoriesAndFiles(onRetrieve, this.apiUrl.concat(this.getPathToString()));
     return pastPath ? pastPath : '';
   }
 
   private getDirectoriesAndFiles(onRetrieve: Function, url: string): void {
-    this.initContentData();
-    this.http.get<ContentDataResponse>(url, OPTIONS).subscribe({
+    this.contentDataList = [];
+    this.isLoadingFinished = false;
+
+    this.http.get<ContentDataResponse>(url, HTTP_OPTIONS).subscribe({
       next: (response: HttpResponse<ContentDataResponse>) => {
         if (response.status === 200) {
           const contentData: any = response.body;
@@ -118,10 +132,10 @@ export class ContentsProviderService {
   public getCurrentPath(): string {
     if (this.paths.length === 0)
       return '/';
-    return `/${this.getPathToString()}`;
+    return `${this.getPathToString()}`;
   }
 
-  public getContent(contentName: string): Content | undefined {
+  public findContent(contentName: string): Content | undefined {
     for (let i = 0; i < this.contentDataList.length; i++) {
       if (this.contentDataList[i].name === contentName) {
         return this.contentDataList[i];
@@ -133,10 +147,36 @@ export class ContentsProviderService {
 
   public getContentPath(contentName: string, path?: string): string {
     if (!path) path = this.getCurrentPath();
-    return this.url.concat(path, contentName);
+    return this.apiUrl.concat(path, contentName);
   }
 
-  public get url(): string {
-    return URLS.url;
+  /*public set currentContent(content: Content | undefined) {
+    this._currentContent = content;
+  }*/
+
+  /*public get currentContent(): Content | undefined {
+    return this._currentContent;
+  }*/
+
+  /*public moveToNext(): boolean {
+    if (!this._currentContent) return false;
+
+    if (this._currentContent.nextContent) {
+      this._currentContent = this._currentContent.nextContent;
+      return true;
+    }
+
+    return false;
   }
+
+  public moveToPrevious(): boolean {
+    if (!this._currentContent) return false;
+
+    if (this._currentContent.previousContent) {
+      this._currentContent = this._currentContent.previousContent;
+      return true;
+    }
+
+    return false;
+  }*/
 }

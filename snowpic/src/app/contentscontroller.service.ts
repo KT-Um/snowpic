@@ -7,6 +7,7 @@ export interface Content {
   type: string;
   mtime: string;
   src: string;
+  format: string;
   nextContent: Content | undefined;
   previousContent: Content | undefined;
 }
@@ -25,39 +26,22 @@ const HTTP_OPTIONS = {
   }
 }
 
-@Injectable({
-  providedIn: 'root'
-})
-export class ContentsControllerService {
+export class ContentsController {
+  private readonly NO_SUPPORTED_FORMAT = '';
+  private readonly IMAGE_FORMAT = 'image';
+  private readonly VIDEO_FORMAT = 'video';
   private paths: string[];
   private isLoadingFinished: boolean;
   private contentDataList: Content[];
-  private apiUrl: string;
-  private readonly ASSETS_URL: string = './assets/environment.json';
-  private isReadyToUse: boolean;
+  private imageFormats: string;
+  private videoFormats: string;
 
-  constructor(private http: HttpClient, private environmentLoader: EnvironmentLoaderService) {
+  constructor(private http: HttpClient, private readonly apiUrl: string, imageFormats: string, videoFormats: string) {
     this.paths = [];
     this.isLoadingFinished = false;
     this.contentDataList = [];
-    this.apiUrl = '';
-    this.isReadyToUse = false;
-  }
-
-  public async ready(onReady: Function) {
-    if (this.isReadyToUse) {
-      onReady();
-      return
-    }
-
-    await this.environmentLoader.load((env: Environment) => {
-      if (!env.apiUrl) throw new Error("API URL is not defined yet. Loading failed.");
-      this.apiUrl = env.apiUrl;
-    });
-
-    if (this.apiUrl === '') throw new Error("API URL is not defined yet.");
-    this.isReadyToUse = true;
-    onReady();
+    this.imageFormats = imageFormats;
+    this.videoFormats = videoFormats;
   }
 
   private getPathToString(): string {
@@ -68,24 +52,24 @@ export class ContentsControllerService {
     return wholePath;
   }
 
-  public accessTopDirectory(onRetrieve: Function): void {
+  public accessTopDirectory(onRetrieve: Function, onComplete: Function): void {
     this.paths = [];
-    this.getDirectoriesAndFiles(onRetrieve, this.apiUrl);
+    this.getDirectoriesAndFiles(onRetrieve, onComplete, this.apiUrl);
   }
 
-  public exploreIn(onRetrieve: Function, newPath: string): string {
+  public exploreIn(onRetrieve: Function, onComplete: Function, newPath: string): string {
     this.paths.push(newPath);
-    this.getDirectoriesAndFiles(onRetrieve, this.apiUrl.concat(this.getPathToString()));
+    this.getDirectoriesAndFiles(onRetrieve, onComplete, this.apiUrl.concat(this.getPathToString()));
     return this.paths[this.paths.length - 1];
   }
 
-  public exploreOut(onRetrieve: Function): string {
+  public exploreOut(onRetrieve: Function, onComplete: Function): string {
     const pastPath = this.paths.pop();
-    this.getDirectoriesAndFiles(onRetrieve, this.apiUrl.concat(this.getPathToString()));
+    this.getDirectoriesAndFiles(onRetrieve, onComplete, this.apiUrl.concat(this.getPathToString()));
     return pastPath ? pastPath : '';
   }
 
-  private getDirectoriesAndFiles(onRetrieve: Function, url: string): void {
+  private getDirectoriesAndFiles(onRetrieve: Function, onComplete: Function, url: string): void {
     this.contentDataList = [];
     this.isLoadingFinished = false;
 
@@ -102,6 +86,7 @@ export class ContentsControllerService {
                 type: content.type,
                 mtime: content.mtime,
                 src: this.getContentPath(content.name, currentPath),
+                format: this.isImage(content.name) ? this.IMAGE_FORMAT : this.isVideo(content.name) ? this.VIDEO_FORMAT : this.NO_SUPPORTED_FORMAT,
                 nextContent: undefined,
                 previousContent: undefined
               });
@@ -117,7 +102,10 @@ export class ContentsControllerService {
         }
       },
       error: err => { },
-      complete: () => { this.isLoadingFinished = true; }
+      complete: () => {
+        this.isLoadingFinished = true;
+        onComplete();
+      }
     });
   }
 
@@ -135,48 +123,65 @@ export class ContentsControllerService {
     return `${this.getPathToString()}`;
   }
 
-  public findContent(contentName: string): Content | undefined {
-    for (let i = 0; i < this.contentDataList.length; i++) {
-      if (this.contentDataList[i].name === contentName) {
-        return this.contentDataList[i];
-      }
-    }
-    
-    return undefined;
-  }
-
   public getContentPath(contentName: string, path?: string): string {
     if (!path) path = this.getCurrentPath();
     return this.apiUrl.concat(path, contentName);
   }
 
-  /*public set currentContent(content: Content | undefined) {
-    this._currentContent = content;
-  }*/
+  private isImage(content: string): boolean {
+    const extension = content.substring(content.lastIndexOf('.') + 1, content.length);
 
-  /*public get currentContent(): Content | undefined {
-    return this._currentContent;
-  }*/
-
-  /*public moveToNext(): boolean {
-    if (!this._currentContent) return false;
-
-    if (this._currentContent.nextContent) {
-      this._currentContent = this._currentContent.nextContent;
+    if (extension.match(this.imageFormats)) {
       return true;
+    } else {
+      return false;
     }
-
-    return false;
   }
 
-  public moveToPrevious(): boolean {
-    if (!this._currentContent) return false;
+  private isVideo(content: string): boolean {
+    const extension = content.substring(content.lastIndexOf('.') + 1, content.length);
 
-    if (this._currentContent.previousContent) {
-      this._currentContent = this._currentContent.previousContent;
+    if (extension.match(this.videoFormats)) {
       return true;
+    } else {
+      return false;
+    }
+  }
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ContentsControllerService {
+  private contentsController: ContentsController | undefined;
+  private isReadyToUse: boolean;
+
+  constructor(private http: HttpClient, private environmentLoader: EnvironmentLoaderService) {
+    this.isReadyToUse = false;
+  }
+
+  public async ready(): Promise<ContentsController | undefined> {
+    if (this.isReadyToUse) {
+      return this.contentsController;
     }
 
-    return false;
-  }*/
+    let apiUrl: string = '', imageFormats: string = '', videoFormats: string = '';
+    await this.environmentLoader.load((env: Environment) => {
+      if (!env.apiUrl) throw new Error("API URL is not defined yet. Loading failed.");
+      apiUrl = env.apiUrl;
+
+      if(!env.supportedImageFormats) throw new Error("Image formats are not defined yet. Loading failed.")
+      imageFormats = env.supportedImageFormats;
+
+      if(!env.supportedVideoFormats) throw new Error("Video formats are not defined yet. Loading failed.")
+      videoFormats = env.supportedVideoFormats;
+    });
+
+    if (apiUrl.length === 0) throw new Error("API URL is not defined yet. It is empty.");
+    if (imageFormats.length === 0) throw new Error("image_formats is not defined yet. It is empty.");
+    if (videoFormats.length === 0) throw new Error("video_formats is not defined yet. It is empty.");
+    this.isReadyToUse = true;
+
+    return this.contentsController = new ContentsController(this.http, apiUrl, imageFormats, videoFormats);
+  }
 }

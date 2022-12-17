@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 interface Server {
-  image_location: string,
+  contents_location: string,
   server_address: string,
   protocol: string,
 }
@@ -9,6 +9,8 @@ interface Server {
 interface App {
   app_name: string,
   supported_formats: string,
+  supported_image_formats: string,
+  supported_video_formats: string,
   app_title_bar: string,
   dialog: Dialog
 }
@@ -35,7 +37,9 @@ export interface Environment {
   contentMaxHeight: string | undefined,
   contentPreviewList: string | undefined,
   appName: string | undefined,
-  supportedForamts: string | undefined
+  supportedFormats: string | undefined,
+  supportedImageFormats: string | undefined,
+  supportedVideoFormats: string | undefined
 }
 
 @Injectable({
@@ -54,49 +58,53 @@ export class EnvironmentLoaderService {
   }
 
   public async load(onLoad: (loader: Environment) => void): Promise<void> {
-    if (this.isLoaded) {
-      onLoad({
-        apiUrl: this.apiUrl,
-        imageLocation: this.imageLocation,
-        serverAddress: this.serverAddress,
-        protocol: this.protocol,
-        dialogCloseButton: this.dialogCloseButton,
-        appTitleBar: this.appTitleBar,
-        contentWidth: this.contentWidth,
-        contentHeight: this.contentHeight,
-        contentMaxWidth: this.contentMaxWidth,
-        contentMaxHeight: this.contentMaxHeight,
-        contentPreviewList: this.contentPreviewList,
-        appName: this.appName,
-        supportedForamts: this.supportedForamts
-      });
+    if (!this.isLoaded) {
+      await fetch(this.ASSETS_URL).then((res: Response) => res.json()).then(env => {
+        this.server = env[0];
+        this.app = env[1];
 
-      return;
+        if (!this.server) throw new Error("Cannot retrieve the api url. The environment configuration is not ready yet.");
+        if (!this.server.protocol || this.server.protocol?.length === 0) throw new Error("Cannot retrieve protocol. The environment configuration is not ready yet.");
+        if (!this.server.server_address || this.server.server_address?.length === 0) throw new Error("Cannot retrieve server_address. The environment configuration is not ready yet.");
+        if (!this.server.contents_location || this.server.contents_location?.length === 0) throw new Error("Cannot retrieve contents_location. The environment configuration is not ready yet.");
+
+        this._apiUrl = `${this.server.protocol}://${this.server.server_address}/${this.server.contents_location}/`;
+        this.isLoaded = true;
+      });
     }
+    
+    if (!this.apiUrl || this.apiUrl.length === 0) throw new Error("Cannot retrieve the api url. The environment configuration is not ready yet.");
+    if (!this.contentsLocation || this.contentsLocation.length === 0) throw new Error("Cannot retrieve contents_location. The environment configuration is not ready yet.");
+    if (!this.serverAddress || this.serverAddress.length === 0) throw new Error("Cannot retrieve server_address. The environment configuration is not ready yet.");
+    if (!this.protocol || this.protocol.length === 0) throw new Error("Cannot retrieve protocol. The environment configuration is not ready yet.");
+    if (!this.dialogCloseButton || this.dialogCloseButton.length === 0) throw new Error("Cannot retrieve dialog_close_button. The environment configuration is not ready yet.");
+    if (!this.appTitleBar || this.appTitleBar.length === 0) throw new Error("Cannot retrieve app_title_bar. The environment configuration is not ready yet.");
+    if (!this.contentWidth || this.contentWidth.length === 0) throw new Error("Cannot retrieve content_width. The environment configuration is not ready yet.");
+    if (!this.contentHeight || this.contentHeight.length === 0) throw new Error("Cannot retrieve content_height. The environment configuration is not ready yet.");
+    if (!this.contentMaxWidth || this.contentMaxWidth.length === 0) throw new Error("Cannot retrieve content_max_width. The environment configuration is not ready yet.");
+    if (!this.contentMaxHeight || this.contentMaxHeight.length === 0) throw new Error("Cannot retrieve content_max_height. The environment configuration is not ready yet.");
+    if (!this.contentPreviewList || this.contentPreviewList.length === 0) throw new Error("Cannot retrieve content_preview_list. The environment configuration is not ready yet.");
+    if (!this.appName || this.appName.length === 0) throw new Error("Cannot retrieve app_name. The environment configuration is not ready yet.");
+    if (!this.supportedFormats || this.supportedFormats.length === 0) throw new Error("Cannot retrieve supported_formats. The environment configuration is not ready yet.");
+    if (!this.supportedImageFormats || this.supportedImageFormats.length === 0) throw new Error("Cannot retrieve supported_image_formats. The environment configuration is not ready yet.");
+    if (!this.supportedVideoFormats || this.supportedVideoFormats.length === 0) throw new Error("Cannot retrieve supported_video_formats. The environment configuration is not ready yet.");
 
-    await fetch(this.ASSETS_URL).then((res: Response) => res.json()).then(env => {
-      this.server = env[0];
-      this.app = env[1];
-      if (this.server === undefined) throw new Error("Cannot find the api url. The environment configuration is not ready yet.");
-
-      this._apiUrl = `${this.server.protocol}://${this.server.server_address}/${this.server.image_location}/`;
-      this.isLoaded = true;
-
-      onLoad({
-        apiUrl: this.apiUrl,
-        imageLocation: this.imageLocation,
-        serverAddress: this.serverAddress,
-        protocol: this.protocol,
-        dialogCloseButton: this.dialogCloseButton,
-        appTitleBar: this.appTitleBar,
-        contentWidth: this.contentWidth,
-        contentHeight: this.contentHeight,
-        contentMaxWidth: this.contentMaxWidth,
-        contentMaxHeight: this.contentMaxHeight,
-        contentPreviewList: this.contentPreviewList,
-        appName: this.appName,
-        supportedForamts: this.supportedForamts
-      });
+    onLoad({
+      apiUrl: this.apiUrl,
+      imageLocation: this.contentsLocation,
+      serverAddress: this.serverAddress,
+      protocol: this.protocol,
+      dialogCloseButton: this.dialogCloseButton,
+      appTitleBar: this.appTitleBar,
+      contentWidth: this.contentWidth,
+      contentHeight: this.contentHeight,
+      contentMaxWidth: this.contentMaxWidth,
+      contentMaxHeight: this.contentMaxHeight,
+      contentPreviewList: this.contentPreviewList,
+      appName: this.appName,
+      supportedFormats: this.supportedFormats,
+      supportedImageFormats: this.supportedImageFormats,
+      supportedVideoFormats: this.supportedVideoFormats
     });
   }
 
@@ -104,8 +112,8 @@ export class EnvironmentLoaderService {
     return this.server? this._apiUrl : undefined;
   }
 
-  private get imageLocation(): string | undefined {
-    return this.server ? this.server.image_location : undefined;
+  private get contentsLocation(): string | undefined {
+    return this.server ? this.server.contents_location : undefined;
   }
 
   private get serverAddress(): string | undefined {
@@ -148,7 +156,15 @@ export class EnvironmentLoaderService {
     return this.app ? this.app.app_name : undefined;
   }
   
-  private get supportedForamts(): string | undefined {
+  private get supportedFormats(): string | undefined {
     return this.app ? this.app.supported_formats : undefined;
+  }
+
+  private get supportedImageFormats(): string | undefined {
+    return this.app ? this.app.supported_image_formats : undefined;
+  }
+
+  private get supportedVideoFormats(): string | undefined {
+    return this.app ? this.app.supported_video_formats : undefined;
   }
 }

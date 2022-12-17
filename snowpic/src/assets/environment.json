@@ -1,8 +1,8 @@
 [
     {
         "category": "server",
-        "image_location": "Photo",
-        "server_address": "192.168.0.24",
+        "contents_location": "Photo",
+        "server_address": "192.168.0.28",
         "protocol": "http"
     },
     {
@@ -10,6 +10,8 @@
         "app_name": "snowpic",
         "app_title_bar": "true",
         "supported_formats" : "jpg|jpeg|png|gif|JPG|JPEG|PNG|GIF|mp4|MP4",
+        "supported_image_formats" : "jpg|jpeg|png|gif|JPG|JPEG|PNG|GIF",
+        "supported_video_formats" : "mp4|MP4",
         "dialog" : {
             "dialog_close_button": "true",
             "content_width": "100vw",
@@ -18,5 +20,9 @@
             "content_max_height": "100vh",
             "content_preview_list": "false"
         }
+    },
+    {
+        "category": "test",
+        "code": "setTimeout(() => { this.exploreIn('2011/2011-04-16(양재천)'); }, 500); setTimeout(() => { this.showContent('DSC_0076.JPG'); }, 500);"
     }
 ]

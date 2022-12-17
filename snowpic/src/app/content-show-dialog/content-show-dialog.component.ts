@@ -68,10 +68,8 @@ export class ContentShowDialogComponent implements AfterViewInit {
         this._isContentPreview = env.contentPreviewList === 'true';
       });
 
-      //this._innerViewHeight = '100vh';
       this._innerViewHeight = `${window.innerHeight}px`;
       this._innerViewWidth = `${window.innerWidth}px`;
-      //this._outerViewHeight = '100vh';
       this._outerViewHeight = `${window.innerHeight}px`;
       this._outerViewWidth = `${window.innerWidth * 3}px`;
   }
@@ -83,10 +81,8 @@ export class ContentShowDialogComponent implements AfterViewInit {
   }
 
   private calcDimensionAfterResize(): void {
-    //this._innerViewHeight = '100vh';
     this._innerViewHeight = `${window.innerHeight}px`;
     this._innerViewWidth = `${window.innerWidth}px`;
-    //this._outerViewHeight = '100vh';
     this._outerViewHeight = `${window.innerHeight}px`;
     this._outerViewWidth = `${window.innerWidth * 3}px`;
   }

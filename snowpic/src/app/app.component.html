@@ -8,7 +8,7 @@
   </div>
 
   <mat-list *ngIf="!isLoading" clearfix class="list">
-    <mat-list-item *ngIf="!isTopDirectory()" class="flex-nowrap-container list-item">
+    <mat-list-item *ngIf="!isTopDirectory" class="flex-nowrap-container list-item">
       <div class="icons">
         <mat-icon class="icon">folder_open</mat-icon>
         <mat-icon class="icon layerd-icon">keyboard_arrow_up</mat-icon>
@@ -25,7 +25,7 @@
       </ng-container>
       <mat-list-item *ngSwitchCase="'file'" class="flex-nowrap-container list-item">
         <img [src]="item.src" class="thumbnail" rounded thumbnail>
-        <button mat-flat-button (click)="showContent(item.name)" class="button">{{item.name}}</button>
+        <button mat-flat-button (click)="showContent(item)" class="button">{{item.name}}</button>
       </mat-list-item>
     </ng-container>
   </mat-list>

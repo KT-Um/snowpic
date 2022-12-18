@@ -20,9 +20,5 @@
             "content_max_height": "100vh",
             "content_preview_list": "false"
         }
-    },
-    {
-        "category": "test",
-        "code": "setTimeout(() => { this.exploreIn('2011/2011-04-16(양재천)'); }, 500); setTimeout(() => { this.showContent('DSC_0076.JPG'); }, 500);"
     }
 ]

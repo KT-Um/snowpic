@@ -1,0 +1,96 @@
+.flex-wrap-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    clear: both;
+}
+
+.flex-nowrap-container {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    clear: both;
+}
+
+.path {
+    margin: 0px;
+    padding: 5px;
+    display: table;
+}
+
+.path-icon {
+    display: table-cell;
+    color: gray;
+    font-size: medium;
+    vertical-align: middle;
+}
+
+.path-info {
+    display: table-cell;
+    color: black;
+    font-size: medium;
+    vertical-align: middle;
+    text-align: left;
+    width: 100%;
+}
+
+.total {
+    display: table-cell;
+    color: black;
+    font-size: small;
+    vertical-align: middle;
+    text-align: right;
+    width: 100%;
+}
+
+.thumbnail {
+    width: 24px;
+    height: 24px;
+}
+
+.button {
+    display: block;
+    width: 100%;
+    background-color: transparent;
+    text-align: left;
+    margin: 0px;
+    padding: 0px;
+    text-indent: 5px;
+}
+
+.button:hover {
+    background-color: aliceblue;
+}
+
+.icons {
+    position: relative;
+}
+
+.icon {
+    color: #F8D775;
+    vertical-align: middle;
+    margin: 0px;
+    padding: 0px;
+}
+
+.layerd-icon {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}
+
+.list {
+    padding: 0px;
+    margin: 0px;
+}
+
+.list-item {
+    padding: 0px;
+    margin: -10px;
+}

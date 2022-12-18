@@ -1,0 +1,32 @@
+<div class="path">
+    <mat-icon class="path-icon">keyboard_arrow_right</mat-icon>
+    <span class="path-info">{{currentPath}}</span>
+    <span class="total">total:{{count}}</span>
+</div>
+
+<mat-list *ngIf="!isLoading" clearfix class="list">
+    <mat-list-item *ngIf="!isTopDirectory" class="flex-nowrap-container list-item">
+        <div class="icons">
+            <mat-icon class="icon">folder_open</mat-icon>
+            <mat-icon class="icon layerd-icon">keyboard_arrow_up</mat-icon>
+        </div>
+        <button mat-flat-button (click)="exploreOut()" class="button">.&nbsp;.</button>
+    </mat-list-item>
+
+    <ng-container *ngFor="let item of items; index as i" [ngSwitch]="item.type">
+        <ng-container *ngSwitchCase="'directory'">
+            <mat-list-item class="flex-nowrap-container list-item" [autoscroll]="pastPath === item.name">
+                <mat-icon class="icon">folder</mat-icon>
+                <button mat-flat-button (click)="exploreIn(item.name)" class="button">{{item.name}}</button>
+            </mat-list-item>
+        </ng-container>
+        <mat-list-item *ngSwitchCase="'file'" class="flex-nowrap-container list-item">
+            <img [src]="item.src" class="thumbnail" rounded thumbnail>
+            <button mat-flat-button (click)="showContent(item)" class="button">{{item.name}}</button>
+        </mat-list-item>
+    </ng-container>
+</mat-list>
+
+<ng-container *ngIf="isLoading">
+    <mat-spinner [diameter]="50" class="spinner"></mat-spinner>
+</ng-container>

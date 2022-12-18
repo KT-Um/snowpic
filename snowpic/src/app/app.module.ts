@@ -18,14 +18,18 @@ import { EnvironmentLoaderService } from './environmentloader.service';
 
 import { AutoScrollDirective } from './autoscroll.directive';
 import { ContentsControllerService } from './contentscontroller.service';
-import { AppTitleBarComponent } from './app-title-bar/app-title-bar.component';
+import { TitleBarComponent } from './title-bar/title-bar.component';
+import { ProcessSlideEventDirective } from './process-slide-event.directive';
+import { ContentsListComponent } from './contents-list/contents-list.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ContentShowDialogComponent,
     AutoScrollDirective,
-    AppTitleBarComponent
+    TitleBarComponent,
+    ProcessSlideEventDirective,
+    ContentsListComponent
   ],
   imports: [
     BrowserModule,

@@ -1,8 +1,8 @@
-<div class="dialog hidden-scrollable" contenteditable="false" tabindex="0">
+<div class="dialog hidden-scrollable" slide [(content)]="content" [innerViewWidth]="innerViewWidth" contenteditable="false" tabindex="0">
     <div class="content-area" [ngStyle]="{'grid-template-rows': isContentPreview ? '85% 15%' : '100%'}">
         <span class="content-view-list" [ngStyle]="{'height': outerViewHeight, 'width': outerViewWidth}">
             <span class="content-view" *ngFor="let src of srcs; let i = index" [ngStyle]="{'height': innerViewHeight, 'width': innerViewWidth}">
-                <img #content [src]="src" [ngStyle]="{'height': imageHeight, 'width': imageWidth}" />
+                <img #contents [src]="src" [ngStyle]="{'height': imageHeight, 'width': imageWidth}" />
             </span>
         </span>
         <!-- <div *ngIf="isContentPreview" class="content-preview-list hidden-scrollable">

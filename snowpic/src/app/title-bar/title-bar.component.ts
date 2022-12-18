@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { Environment, EnvironmentLoaderService } from '../environmentloader.service';
 
 @Component({
-  selector: 'sp-app-title-bar',
-  templateUrl: './app-title-bar.component.html',
-  styleUrls: ['./app-title-bar.component.css']
+  selector: 'title-bar',
+  templateUrl: './title-bar.component.html',
+  styleUrls: ['./title-bar.component.css']
 })
-export class AppTitleBarComponent implements OnInit {
+export class TitleBarComponent implements OnInit {
   private _appName: string | undefined;
   private NO_APP_NAME: string = '';
   private _appTitleBar: boolean | undefined;

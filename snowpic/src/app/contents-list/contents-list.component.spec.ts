@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AppTitleBarComponent } from './app-title-bar.component';
+import { ContentsListComponent } from './contents-list.component';
 
-describe('AppTitleBarComponent', () => {
-  let component: AppTitleBarComponent;
-  let fixture: ComponentFixture<AppTitleBarComponent>;
+describe('ContentsListComponent', () => {
+  let component: ContentsListComponent;
+  let fixture: ComponentFixture<ContentsListComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ AppTitleBarComponent ]
+      declarations: [ ContentsListComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(AppTitleBarComponent);
+    fixture = TestBed.createComponent(ContentsListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

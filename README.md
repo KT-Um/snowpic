@@ -74,35 +74,48 @@ location /images {
 
 You need to set snowpic to know where to send a request to get directories and files data.
 
-Add these lines to env.ts file in assets directory.
+Add these lines to environment.json file in assets directory.
 
 ```
-export const IMAGE_LOCATION = {
-    "name": "images"
-}
-
-export const SERVER_ADDRESS = {
-    "address": "localhost"
-}
-
-export const PROTOCOL = {
-    "protocol": "http"
-}
+[
+    {
+        "category": "server",
+        "contents_location": "specify the directory name that contains your photos",
+        "server_address": "specify the IP address of your server",
+        "protocol": "http"
+    },
+    {
+        "category": "app",
+        "app_name": "snowpic",
+        "app_title_bar": "true",
+        "supported_formats" : "jpg|jpeg|png|gif|JPG|JPEG|PNG|GIF|mp4|MP4",
+        "supported_image_formats" : "jpg|jpeg|png|gif|JPG|JPEG|PNG|GIF",
+        "supported_video_formats" : "mp4|MP4",
+        "dialog" : {
+            "dialog_close_button": "true",
+            "content_width": "100vw",
+            "content_height": "100vh",
+            "content_max_width": "100vw",
+            "content_max_height": "100vh",
+            "content_preview_list": "false"
+        }
+    }
+]
 ```
 
-IMAGE_LOCATION must match the location configuration of your web server above.
+contents_location must match the location configuration of your web server above.
 
-Do not add '/' character before and after IMAGE_LOCATION.
+Do not add '/' character before and after contents_location.
 
-SERVER_ADDRESS means where you send a request to and get a response from.
+server_address means where you send a request to and get a response from.
 
 If your web server and image directory are under the same IP address, you can use localhost.
 
 Otherwise, type a specific IP address.
 
-PROTOCOL is either of http or https depending on your web server configuration.
+protocol is either of http or https depending on your web server configuration.
 
-If you already set up SSL on the server, https is highly recommended. 
+If you already set up SSL on the server, https is highly recommended.  
 
 # Supported Image Formats
 

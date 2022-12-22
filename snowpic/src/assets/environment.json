@@ -1,8 +1,8 @@
 [
     {
         "category": "server",
-        "contents_location": "Photo",
-        "server_address": "192.168.0.28",
+        "contents_location": "image",
+        "server_address": "localhost",
         "protocol": "http"
     },
     {

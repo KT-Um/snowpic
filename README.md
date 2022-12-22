@@ -117,9 +117,10 @@ protocol is either of http or https depending on your web server configuration.
 
 If you already set up SSL on the server, https is highly recommended.  
 
-# Supported Image Formats
-
-Currently, snowpic supports jpg, jpeg, png, and gif so far.
+# Supported Media Formats
+Currently, snowpic supports both of image and video.
+- Supported image formats: jpg, jpeg, png, and gif
+- Supported video formats : mp4, ogg, webm
 
 # Issues
 

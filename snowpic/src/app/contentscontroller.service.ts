@@ -8,8 +8,10 @@ export interface Content {
   mtime: string;
   src: string;
   format: string;
+  extension: string;
   nextContent: Content | undefined;
   previousContent: Content | undefined;
+  autoplay: boolean;
 }
 
 export interface ContentDataResponse {
@@ -81,15 +83,20 @@ export class ContentsController {
             const currentPath = this.getCurrentPath();
 
             contentData.forEach((content: ContentDataResponse, index: number) => {
-              this.contentDataList.push({
-                name: content.name,
-                type: content.type,
-                mtime: content.mtime,
-                src: this.getContentPath(content.name, currentPath),
-                format: this.isImage(content.name) ? this.IMAGE_FORMAT : this.isVideo(content.name) ? this.VIDEO_FORMAT : this.NO_SUPPORTED_FORMAT,
-                nextContent: undefined,
-                previousContent: undefined
-              });
+              const contentFormat = this.isImage(content.name) ? this.IMAGE_FORMAT : this.isVideo(content.name) ? this.VIDEO_FORMAT : this.NO_SUPPORTED_FORMAT;
+              if (content.type !== "file" || contentFormat !== this.NO_SUPPORTED_FORMAT) {
+                this.contentDataList.push({
+                  name: content.name,
+                  type: content.type,
+                  mtime: content.mtime,
+                  src: this.getContentPath(content.name, currentPath),
+                  format: contentFormat,
+                  extension: content.name.lastIndexOf('.') !== -1 ? content.name.substring(content.name.lastIndexOf('.') + 1, content.name.length).toLowerCase() : '',
+                  nextContent: undefined,
+                  previousContent: undefined,
+                  autoplay: false
+                });
+              }
             });
 
             for (let i = 0; i < this.contentDataList.length; i++) {

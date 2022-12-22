@@ -13,9 +13,16 @@ export class ContentsListComponent implements OnInit {
   private readonly NO_APP_NAME: string = '';
   private readonly NO_PATH: string = '';
   private readonly IMAGE_FORMAT: string = 'image';
-  private readonly VIDEO_FORMAT: string = 'video'
+  private readonly VIDEO_FORMAT: string = 'video';
+  private readonly MP4: string = 'mp4';
+  private readonly OGG: string = 'ogg';
+  private readonly WEBM: string = 'webm';
+  private readonly TYPE_MP4: string = 'video/mp4';
+  private readonly TYPE_OGG: string = 'video/ogg';
+  private readonly TYPE_WEBM: string = 'video/webm';
+  private readonly NO_TYPE: string = '';
 
-  private _items: Content[];
+  private _contents: Content[];
   private _appName: string | undefined;
   private _pastPath: string | undefined;
   private _isTopDirectory: boolean | undefined;
@@ -23,7 +30,7 @@ export class ContentsListComponent implements OnInit {
   private _isLoading: boolean | undefined;
 
   constructor(private contentsController: ContentsControllerService, private dialog: MatDialog, private environmentLoader: EnvironmentLoaderService) {
-    this._items = [];
+    this._contents = [];
   }
 
   ngOnInit(): void {
@@ -36,7 +43,7 @@ export class ContentsListComponent implements OnInit {
   }
 
   public home(): void {
-    this._items = [];
+    this._contents = [];
     this._isLoading = true;
     this.contentsController.ready().then(controller => { controller?.accessTopDirectory(this.onRetrieve, this.onComplete); })
   }
@@ -49,12 +56,12 @@ export class ContentsListComponent implements OnInit {
     return this._currentPath ? this._currentPath : this.NO_PATH;
   }
 
-  public get items(): Content[] {
-    return this._items;
+  public get contents(): Content[] {
+    return this._contents;
   }
 
   public get count(): number {
-    return this._items.length;
+    return this._contents.length;
   }
 
   public get appName(): string {
@@ -65,14 +72,29 @@ export class ContentsListComponent implements OnInit {
     return this._pastPath ? this._pastPath : this.NO_PATH;
   }
 
+  public get imageFormat(): string {
+    return this.IMAGE_FORMAT;
+  }
+
+  public get videoFormat(): string {
+    return this.VIDEO_FORMAT;
+  }
+
+  public getVideoType(content: Content): string {
+    if (content.extension === this.MP4) return this.TYPE_MP4;
+    if (content.extension === this.OGG) return this.TYPE_OGG;
+    if (content.extension === this.WEBM) return this.TYPE_WEBM;
+    return this.NO_TYPE;
+  }
+
   private onRetrieve = (contents: Content[]) => {
-    this._items = [];
+    this._contents = [];
     contents.forEach((content: Content) => {
       if (content.type === 'file') {
-        if (content.format === this.IMAGE_FORMAT)
-          this._items.push(content);
+        if (content.format === this.IMAGE_FORMAT || content.format === this.VIDEO_FORMAT)
+          this._contents.push(content);
       } else {
-        this._items.push(content);
+        this._contents.push(content);
       }
     });
   };

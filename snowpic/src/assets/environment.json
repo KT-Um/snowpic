@@ -11,7 +11,7 @@
         "app_title_bar": "true",
         "supported_formats" : "jpg|jpeg|png|gif|JPG|JPEG|PNG|GIF|mp4|MP4",
         "supported_image_formats" : "jpg|jpeg|png|gif|JPG|JPEG|PNG|GIF",
-        "supported_video_formats" : "mp4|MP4",
+        "supported_video_formats" : "mp4|MP4|webm|WEBM|ogg|OGG",
         "dialog" : {
             "dialog_close_button": "true",
             "content_width": "100vw",

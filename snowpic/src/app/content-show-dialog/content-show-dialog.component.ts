@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, HostListener, Inject } from '@angular/core';
+import { AfterViewInit, Component, HostListener, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Content } from '../contentscontroller.service';
 import { Environment, EnvironmentLoaderService } from '../environmentloader.service';
@@ -9,6 +9,21 @@ import { Environment, EnvironmentLoaderService } from '../environmentloader.serv
   styleUrls: ['./content-show-dialog.component.css'],
 })
 export class ContentShowDialogComponent implements AfterViewInit {
+  private readonly NO_CONTENT: Content = {
+    name: '', type: '', mtime: '', src: '', format: '', extension: '', nextContent: undefined, previousContent: undefined, autoplay: false
+  }
+
+  private readonly NO_SUPPORTED_FORMAT = '';
+  private readonly IMAGE_FORMAT: string = 'image';
+  private readonly VIDEO_FORMAT: string = 'video';
+  private readonly MP4: string = 'mp4';
+  private readonly OGG: string = 'ogg';
+  private readonly WEBM: string = 'webm';
+  private readonly TYPE_MP4: string = 'video/mp4';
+  private readonly TYPE_OGG: string = 'video/ogg';
+  private readonly TYPE_WEBM: string = 'video/webm';
+  private readonly NO_TYPE: string = '';
+
   private _isDialogOpened: boolean;
   private _dialogCloseButton: boolean;
   private _preloadedContents: Content[];
@@ -27,6 +42,7 @@ export class ContentShowDialogComponent implements AfterViewInit {
       this._dialogCloseButton = true;
       this._preloadedContents = [];
       this._isContentPreview = false;
+      content.autoplay = true;
 
       // Preload code
       /*for (let i = 0, previousContent = content.previousContent; i < this.PRELOADED_MAX_PREVIOUS; i++, previousContent = previousContent.previousContent) {
@@ -75,24 +91,31 @@ export class ContentShowDialogComponent implements AfterViewInit {
     return this._preloadedContents.slice(0);
   }
 
-  public get srcs(): string[] {
-    const array = new Array<string>;
-    this.previousSrc ? array.push(this.previousSrc) : array.push('');
-    this.currentSrc ? array.push(this.currentSrc) : array.push('');
-    this.nextSrc ? array.push(this.nextSrc) : array.push('');
+  public get imageFormat(): string {
+    return this.IMAGE_FORMAT;
+  }
+
+  public get videoFormat(): string {
+    return this.VIDEO_FORMAT;
+  }
+
+  public get noFormat(): string {
+    return this.NO_SUPPORTED_FORMAT;
+  }
+
+  public getVideoType(content: Content): string {
+    if (content.extension === this.MP4) return this.TYPE_MP4;
+    if (content.extension === this.OGG) return this.TYPE_OGG;
+    if (content.extension === this.WEBM) return this.TYPE_WEBM;
+    return this.NO_TYPE;
+  }
+
+  public get contents(): Content[] {
+    const array = new Array<Content>;
+    array.push(this.content.previousContent ? this.content.previousContent : this.NO_CONTENT);
+    array.push(this.content);
+    array.push(this.content.nextContent ? this.content.nextContent : this.NO_CONTENT);
     return array;
-  }
-
-  private get previousSrc(): string | undefined {
-    return this.content.previousContent ? this.content.previousContent.src : undefined;
-  }
-
-  private get currentSrc(): string | undefined {
-    return this.content.src;
-  }
-
-  private get nextSrc(): string | undefined {
-    return this.content.nextContent ? this.content.nextContent.src : undefined;
   }
 
   public get isDialogOpened(): boolean {
@@ -123,7 +146,7 @@ export class ContentShowDialogComponent implements AfterViewInit {
     }
   }
 
-  public get imageHeight(): string {
+  public get height(): string {
     if (screen.orientation.type.includes("landscape")) {
       return '100%';
     } else if (screen.orientation.type.includes("portrait")) {
@@ -133,7 +156,7 @@ export class ContentShowDialogComponent implements AfterViewInit {
     }
   }
 
-  public get imageWidth(): string {
+  public get width(): string {
     if (screen.orientation.type.includes("landscape")) {
       return 'auto';
     } else if (screen.orientation.type.includes("portrait")) {
@@ -167,9 +190,9 @@ export class ContentShowDialogComponent implements AfterViewInit {
     } else {
       return '90%';
     }
-  }
+  }*/
 
-  public get previewVertialRatio(): string {
+  /*public get previewVertialRatio(): string {
     if (screen.orientation.type.includes("landscape")) {
       return '15%';
     } else if (screen.orientation.type.includes("portrait")) {

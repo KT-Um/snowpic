@@ -43,7 +43,21 @@
     width: 100%;
 }
 
+video {
+    background-color: lightgray;
+}
+
 .thumbnail {
+    width: 24px;
+    height: 24px;
+}
+
+.image-thumbnail {
+    width: 24px;
+    height: 24px;
+}
+
+.video-thumbnail {
     width: 24px;
     height: 24px;
 }

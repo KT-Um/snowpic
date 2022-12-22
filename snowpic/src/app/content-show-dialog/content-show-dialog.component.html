@@ -1,8 +1,12 @@
-<div class="dialog hidden-scrollable" slide [(content)]="content" [innerViewWidth]="innerViewWidth" contenteditable="false" tabindex="0">
+<div class="dialog hidden-scrollable" slide [(content)]="content" #area [focusArea]="area" [innerViewWidth]="innerViewWidth" contenteditable="false" tabindex="0">
     <div class="content-area" [ngStyle]="{'grid-template-rows': isContentPreview ? '85% 15%' : '100%'}">
         <span class="content-view-list" [ngStyle]="{'height': outerViewHeight, 'width': outerViewWidth}">
-            <span class="content-view" *ngFor="let src of srcs; let i = index" [ngStyle]="{'height': innerViewHeight, 'width': innerViewWidth}">
-                <img #contents [src]="src" [ngStyle]="{'height': imageHeight, 'width': imageWidth}" />
+            <span class="content-view" *ngFor="let content of contents" [ngSwitch]="content.format" [ngStyle]="{'height': innerViewHeight, 'width': innerViewWidth}">
+                <img #contents *ngSwitchCase="imageFormat" [src]="content.src" [ngStyle]="{'height': height, 'width': width}" />
+                <video #contents *ngSwitchCase="videoFormat" controls #videos [ngStyle]="{'height': height, 'width': width}" [autoplay]="content.autoplay">
+                    <source [src]="content.src" [type]="getVideoType(content)">
+                </video>
+                <p #contents *ngSwitchCase="noFormat">No supported format: {{content.name}}</p>
             </span>
         </span>
         <!-- <div *ngIf="isContentPreview" class="content-preview-list hidden-scrollable">

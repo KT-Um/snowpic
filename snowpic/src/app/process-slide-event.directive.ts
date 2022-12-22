@@ -6,10 +6,13 @@ import { Content } from './contentscontroller.service';
   selector: '[slide]'
 })
 export class ProcessSlideEventDirective {
-  @ContentChildren("contents", { descendants: true }) private contents: QueryList<ElementRef> | undefined;
-  @Input() public content: Content | undefined;
+  @ContentChildren('contents', { descendants: true }) private contentsElements: QueryList<ElementRef> | undefined;
+  @ContentChildren('videos', { descendants: true }) private videosElements: QueryList<ElementRef> | undefined;
+  
   @Input() public innerViewWidth: string | undefined;
+  @Input() public content: Content | undefined;
   @Output() public contentChange = new EventEmitter();
+  @Input() public focusArea: HTMLElement | undefined;
 
   private readonly EVENT_TIME_GAP: number = 160;
   private readonly AMOUNT_MOVEMENT: number = 30;
@@ -54,7 +57,7 @@ export class ProcessSlideEventDirective {
         const eventTimeGap = event.timeStamp - this.slideEvent.startEventTime;
 
         if (eventTimeGap >= this.EVENT_TIME_GAP) {
-          let elements = this.contents?.toArray();
+          let elements = this.contentsElements?.toArray();
           if (!elements) return;
 
           const amountMovement = touch.pageX - this.slideEvent.startX;
@@ -74,7 +77,7 @@ export class ProcessSlideEventDirective {
         const amountMovement = touch.pageX - this.slideEvent.lastX;
         const movementDirection = touch.pageX - this.slideEvent.startX;
 
-        let elements = this.contents?.toArray();
+        let elements = this.contentsElements?.toArray();
         if (!elements) return;
 
         if (Math.abs(amountMovement) > this.AMOUNT_MOVEMENT) {
@@ -89,7 +92,7 @@ export class ProcessSlideEventDirective {
           }); // move back
         }
 
-        this.initSlideEvent();     
+        this.initSlideEvent();
         break;
       }
     }
@@ -97,8 +100,7 @@ export class ProcessSlideEventDirective {
 
   @HostListener('wheel', ['$event'])
   private onWheel(event: WheelEvent): void {
-    if (this.isAnimating) return;
-    if (!this.isWheeling) return; // skip event
+    if (this.isAnimating || !this.isWheeling) return; // skip some event occurings
     this.isWheeling = false;
 
     if (event.deltaX > 0 || (event.deltaX === 0 && event.deltaY > 0)) {
@@ -107,9 +109,7 @@ export class ProcessSlideEventDirective {
       this.movePrevious(this.MOVE_EVENT_ANIMATION_DURATION);
     }
 
-    setTimeout(() => {
-      this.isWheeling = true;
-    }, this.MAX_MOVE_EVENT_ANIMATION_DURATION);
+    setTimeout(() => { this.isWheeling = true; }, this.MAX_MOVE_EVENT_ANIMATION_DURATION);
   }
 
   @HostListener('keydown', ['$event'])
@@ -119,20 +119,19 @@ export class ProcessSlideEventDirective {
       case 'esc':
         break;
       case 'ArrowLeft':
-        if (this.isFirstContent) return;
         this.movePrevious(this.MOVE_EVENT_ANIMATION_DURATION);
         break;
       case 'ArrowRight':
-        if (this.isLastContent) return;
         this.moveNext(this.MOVE_EVENT_ANIMATION_DURATION);
         break;
     }
   }
 
   private moveNext(duration: number): void {
-    if (!this.content || !this.innerViewWidth) return;
+    if (this.isLastContent || !this.content || !this.innerViewWidth) return;
+
     if (this.content.nextContent) {
-      const elements = this.contents?.toArray();
+      const elements = this.contentsElements?.toArray();
       if (!elements || elements.length === 0) throw new Error("No content element found. Cannot slide your content.");
 
       const currentElement: HTMLElement = elements[1].nativeElement;
@@ -142,9 +141,10 @@ export class ProcessSlideEventDirective {
   }
 
   private movePrevious(duration: number): void {
-    if (!this.content || !this.innerViewWidth) return;
+    if (this.isFirstContent || !this.content || !this.innerViewWidth) return;
+
     if (this.content.previousContent) {
-      const elements = this.contents?.toArray();
+      const elements = this.contentsElements?.toArray();
       if (!elements || elements.length === 0) throw new Error("No content element found. Cannot slide your content.");
 
       const currentElement: HTMLElement = elements[1].nativeElement;
@@ -156,8 +156,27 @@ export class ProcessSlideEventDirective {
   private move(fadeOutElement: HTMLElement, fadeInElement: HTMLElement, x: number, duration: number, contentToSet: Content): void {
     this.animateX(fadeOutElement, x, { duration: duration });
     this.animateX(fadeInElement, x, { duration: duration, doAfterFinished: () => {
-      this.content = contentToSet;
-      this.contentChange.emit(this.content);
+      const stopVideoPlayingAndReset = () => {
+        this.videosElements?.forEach((videoElement: ElementRef, index: number) => {
+          if (videoElement.nativeElement) {
+            videoElement.nativeElement.currentTime = 0;
+            videoElement.nativeElement.pause();
+          }
+        });
+
+        this.focusArea?.focus(); // to remove the white line around the video
+      };
+      stopVideoPlayingAndReset();      
+
+      const resetVideoAutoplay = () => {
+        if (this.content) this.content.autoplay = false;
+        contentToSet.autoplay = true;
+      };
+      resetVideoAutoplay();
+
+      this.contentChange.emit(this.content = contentToSet);
+
+      if ((fadeInElement as HTMLVideoElement).play) (fadeInElement as HTMLVideoElement).play();
     }});
   }
 
@@ -176,31 +195,34 @@ export class ProcessSlideEventDirective {
       }))
     ]).create(element);
 
-    player.onStart(() => {this.isAnimating = true;});
+    player.onStart(() => { this.isAnimating = true; });
     player.onDone(() => {
       if (options!.doAfterFinished) options!.doAfterFinished();
-      if (!(options!.isContinuous)) {
-        if (this.slideAnimationList.length > 0) {
-          this.slideAnimationList.forEach(player => { player.destroy(); });
-          this.slideAnimationList = [];
-        } else {
-          player.destroy();
-        }
-      } else {
+
+      if (options!.isContinuous) {
         this.slideAnimationList.push(player);
+      } else {
+        const destroyAllAnimations = () => {
+          if (this.slideAnimationList.length > 0) {
+            this.slideAnimationList.forEach(player => { player.destroy(); });
+            this.slideAnimationList = [];
+          } else {
+            player.destroy();
+          }
+        };
+        destroyAllAnimations();
       }
-      this.isAnimating = false;
+      this.isAnimating = false; // animation is finished
     });
+
     player.play();
   }
 
   private get isFirstContent(): boolean {
-    if (!this.content || !this.content.previousContent) return true;
-    return false;
+    return !this.content || !this.content.previousContent ? true : false;
   }
 
   private get isLastContent(): boolean {
-    if (!this.content || !this.content.nextContent) return true;
-    return false;
+    return !this.content || !this.content.nextContent ? true : false;
   }
 }

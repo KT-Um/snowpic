@@ -1,7 +1,7 @@
 [
     {
         "category": "server",
-        "contents_location": "image",
+        "contents_location": "images",
         "server_address": "localhost",
         "protocol": "http"
     },

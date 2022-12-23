@@ -46,7 +46,7 @@ export interface Environment {
   providedIn: 'root'
 })
 export class EnvironmentLoaderService {
-  private readonly ASSETS_URL: string = '/assets/environment.json';
+  private readonly ASSETS_URL: string = 'assets/environment.json';
 
   private server: Server | undefined;
   private app: App | undefined;

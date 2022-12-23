@@ -21,6 +21,7 @@ import { ContentsControllerService } from './contentscontroller.service';
 import { TitleBarComponent } from './title-bar/title-bar.component';
 import { ProcessSlideEventDirective } from './process-slide-event.directive';
 import { ContentsListComponent } from './contents-list/contents-list.component';
+import { APP_BASE_HREF } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import { ContentsListComponent } from './contents-list/contents-list.component';
   ],
   providers: [
     EnvironmentLoaderService,
-    ContentsControllerService
+    ContentsControllerService,
+    { provide: APP_BASE_HREF, useValue: `/${window.location.pathname.split('/')[1] || ''}` }
   ],
   bootstrap: [AppComponent]
 })

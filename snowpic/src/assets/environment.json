@@ -1,8 +1,8 @@
 [
     {
         "category": "server",
-        "contents_location": "images",
-        "server_address": "localhost",
+        "content_location": "Photo",
+        "server_address": "192.168.0.28",
         "protocol": "http"
     },
     {
@@ -18,7 +18,7 @@
             "content_height": "100vh",
             "content_max_width": "100vw",
             "content_max_height": "100vh",
-            "content_preview_list": "false"
+            "show_thumbnails": "true"
         }
     }
 ]

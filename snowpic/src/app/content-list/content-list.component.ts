@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ContentShowDialogComponent } from '../content-show-dialog/content-show-dialog.component';
-import { ContentsControllerService, Content } from '../contentscontroller.service';
+import { ContentShowComponent } from '../content-show/content-show.component';
+import { ContentControllerService, Content } from '../content-controller.service';
 import { Environment, EnvironmentLoaderService } from '../environmentloader.service';
 
 @Component({
-  selector: 'contents-list',
-  templateUrl: './contents-list.component.html',
-  styleUrls: ['./contents-list.component.css']
+  selector: 'content-list',
+  templateUrl: './content-list.component.html',
+  styleUrls: ['./content-list.component.css']
 })
-export class ContentsListComponent implements OnInit {
+export class ContentListComponent implements OnInit {
   private readonly NO_APP_NAME: string = '';
   private readonly NO_PATH: string = '';
   private readonly IMAGE_FORMAT: string = 'image';
@@ -29,7 +29,7 @@ export class ContentsListComponent implements OnInit {
   private _currentPath: string | undefined;
   private _isLoading: boolean | undefined;
 
-  constructor(private contentsController: ContentsControllerService, private dialog: MatDialog, private environmentLoader: EnvironmentLoaderService) {
+  constructor(private contentsController: ContentControllerService, private dialog: MatDialog, private environmentLoader: EnvironmentLoaderService) {
     this._contents = [];
   }
 
@@ -127,7 +127,7 @@ export class ContentsListComponent implements OnInit {
 
   public showContent(content: Content): void {
     this.environmentLoader.load((env: Environment) => {
-      this.dialog.open(ContentShowDialogComponent, {
+      this.dialog.open(ContentShowComponent, {
         data: content,
         width: env.contentWidth,
         height: env.contentHeight,

@@ -1,0 +1,35 @@
+<div class="path">
+    <mat-icon class="path__icon">keyboard_arrow_right</mat-icon>
+    <span class="path__info">{{currentPath}}</span>
+    <span class="path__total">total:{{count}}</span>
+</div>
+
+<mat-list class="browse" *ngIf="!isLoading" clearfix>
+    <mat-list-item class="browse__item" *ngIf="!isTopDirectory">
+        <div class="browse__icons">
+            <mat-icon class="browse__icons--displayed">folder_open</mat-icon>
+            <mat-icon class="browse__icons--layered">keyboard_arrow_up</mat-icon>
+        </div>
+        <button mat-flat-button class="browse__item-button" (click)="exploreOut()">.&nbsp;.</button>
+    </mat-list-item>
+
+    <ng-container *ngFor="let content of contents" [ngSwitch]="content.type">
+        <ng-container *ngSwitchCase="'directory'">
+            <mat-list-item class="browse__item" [autoscroll]="pastPath === content.name">
+                <mat-icon class="browse__icon--displayed">folder</mat-icon>
+                <button mat-flat-button class="browse__item-button" (click)="exploreIn(content.name)">{{content.name}}</button>
+            </mat-list-item>
+        </ng-container>
+        <mat-list-item class="browse__item" *ngSwitchCase="'file'" [ngSwitch]="content.format">
+            <img class="browse__item-thumbnail-icon" *ngSwitchCase="imageFormat" [src]="content.src" rounded thumbnail>
+            <video class="browse__item-thumbnail-icon" *ngSwitchCase="videoFormat" preload="metadata">
+                <source [src]="content.src" [type]="getVideoType(content)">
+            </video>
+            <button mat-flat-button class="browse__item-button" (click)="showContent(content)">{{content.name}}</button>
+        </mat-list-item>
+    </ng-container>
+</mat-list>
+
+<ng-container *ngIf="isLoading">
+    <mat-spinner class="spinner" [diameter]="50"></mat-spinner>
+</ng-container>

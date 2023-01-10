@@ -1,8 +1,10 @@
-import { AutoscrollDirective } from './autoscroll.directive';
+import { TestBed } from '@angular/core/testing';
 
-describe('AutoscrollDirective', () => {
+import { AutoScrollDirective } from './autoscroll.directive';
+
+describe('AutoScrollDirective', () => {
   it('should create an instance', () => {
-    const directive = new AutoscrollDirective();
+    const directive = new AutoScrollDirective();
     expect(directive).toBeTruthy();
   });
 });

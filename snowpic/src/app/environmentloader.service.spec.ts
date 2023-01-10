@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { EnvironmentloaderService } from './environmentloader.service';
+import { EnvironmentLoaderService } from './environmentloader.service';
 
 describe('EnvironmentloaderService', () => {
-  let service: EnvironmentloaderService;
+  let service: EnvironmentLoaderService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(EnvironmentloaderService);
+    service = TestBed.inject(EnvironmentLoaderService);
   });
 
   it('should be created', () => {

@@ -1,0 +1,99 @@
+.path {
+    margin: 0px;
+    padding: 5px;
+    display: table;
+}
+
+.path .path__icon {
+    display: table-cell;
+    color: gray;
+    font-size: medium;
+    vertical-align: middle;
+}
+
+.path .path__info {
+    display: table-cell;
+    color: black;
+    font-size: medium;
+    vertical-align: middle;
+    text-align: left;
+    width: 100%;
+}
+
+.path .path__total {
+    display: table-cell;
+    color: black;
+    font-size: small;
+    vertical-align: middle;
+    text-align: right;
+    width: 100%;
+}
+
+.spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.browse {
+    padding: 0px;
+    margin: 0px;
+}
+
+.browse .browse__item {
+    padding: 0px;
+    margin: -10px;
+}
+
+/*.browse .browse__item--nowrap {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    clear: both;
+}*/
+
+.browse .browse__item .browse__icons {
+    position: relative;
+}
+
+.browse .browse__item .browse__icons--displayed {
+    color: #F8D775;
+    vertical-align: middle;
+    margin: 0px;
+    padding: 0px;
+}
+
+.browse .browse__item .browse__icons--layered {
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: #fae094;
+}
+
+.browse .browse__item .browse__icon--displayed {
+    color: #F8D775;
+    vertical-align: middle;
+    padding: 0px;
+    margin: 0px;
+}
+
+.browse .browse__item .browse__item-button {
+    display: block;
+    width: 100%;
+    text-indent: 5px;
+    text-align: left;
+    padding: 0px;
+    margin: 0px;
+    background-color: transparent;
+}
+
+.browse .browse__item .browse__item-button:hover {
+    background-color: aliceblue;
+}
+
+.browse .browse__item .browse__item-thumbnail-icon {
+    object-fit: cover;
+    width: 24px;
+    height: 24px;
+}

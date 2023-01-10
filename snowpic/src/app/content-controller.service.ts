@@ -3,6 +3,7 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Environment, EnvironmentLoaderService } from './environmentloader.service';
 
 export interface Content {
+  fileIndex: number;
   name: string;
   type: string;
   mtime: string;
@@ -28,7 +29,7 @@ const HTTP_OPTIONS = {
   }
 }
 
-export class ContentsController {
+export class HttpControllerService {
   private readonly NO_SUPPORTED_FORMAT = '';
   private readonly IMAGE_FORMAT = 'image';
   private readonly VIDEO_FORMAT = 'video';
@@ -82,10 +83,12 @@ export class ContentsController {
           if (contentData) {
             const currentPath = this.getCurrentPath();
 
-            contentData.forEach((content: ContentDataResponse, index: number) => {
+            let i = 0;
+            contentData.forEach((content: ContentDataResponse) => {
               const contentFormat = this.isImage(content.name) ? this.IMAGE_FORMAT : this.isVideo(content.name) ? this.VIDEO_FORMAT : this.NO_SUPPORTED_FORMAT;
               if (content.type !== "file" || contentFormat !== this.NO_SUPPORTED_FORMAT) {
                 this.contentDataList.push({
+                  fileIndex: content.type === "file" ? i++ : 0,
                   name: content.name,
                   type: content.type,
                   mtime: content.mtime,
@@ -159,17 +162,17 @@ export class ContentsController {
 @Injectable({
   providedIn: 'root'
 })
-export class ContentsControllerService {
-  private contentsController: ContentsController | undefined;
+export class ContentControllerService {
+  private httpController: HttpControllerService | undefined;
   private isReadyToUse: boolean;
 
   constructor(private http: HttpClient, private environmentLoader: EnvironmentLoaderService) {
     this.isReadyToUse = false;
   }
 
-  public async ready(): Promise<ContentsController | undefined> {
+  public async ready(): Promise<HttpControllerService | undefined> {
     if (this.isReadyToUse) {
-      return this.contentsController;
+      return this.httpController;
     }
 
     let apiUrl: string = '', imageFormats: string = '', videoFormats: string = '';
@@ -189,6 +192,6 @@ export class ContentsControllerService {
     if (videoFormats.length === 0) throw new Error("video_formats is not defined yet. It is empty.");
     this.isReadyToUse = true;
 
-    return this.contentsController = new ContentsController(this.http, apiUrl, imageFormats, videoFormats);
+    return this.httpController = new HttpControllerService(this.http, apiUrl, imageFormats, videoFormats);
   }
 }

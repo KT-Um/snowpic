@@ -13,24 +13,32 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { ContentShowDialogComponent } from './content-show-dialog/content-show-dialog.component';
-import { EnvironmentLoaderService } from './environmentloader.service';
-
-import { AutoScrollDirective } from './autoscroll.directive';
-import { ContentsControllerService } from './contentscontroller.service';
-import { TitleBarComponent } from './title-bar/title-bar.component';
-import { ProcessSlideEventDirective } from './process-slide-event.directive';
-import { ContentsListComponent } from './contents-list/contents-list.component';
 import { APP_BASE_HREF } from '@angular/common';
+
+import { ContentShowComponent } from './content-show/content-show.component';
+import { TitleBarComponent } from './title-bar/title-bar.component';
+import { ContentListComponent } from './content-list/content-list.component';
+
+import { EnvironmentLoaderService } from './environmentloader.service';
+import { AutoScrollDirective } from './autoscroll.directive';
+import { ContentControllerService } from './content-controller.service';
+
+import { TouchControlDirective } from './touch-control.directive';
+import { ThumbnailControlDirective } from './thumbnail-control.directive';
+import { PeripheralsControlDirective } from './peripherals-control.directive';
+import { ThumbnailTouchControlDirective } from './thumbnail-touch-control.directive';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ContentShowDialogComponent,
+    ContentShowComponent,
     AutoScrollDirective,
     TitleBarComponent,
-    ProcessSlideEventDirective,
-    ContentsListComponent
+    TouchControlDirective,
+    ContentListComponent,
+    ThumbnailControlDirective,
+    PeripheralsControlDirective,
+    ThumbnailTouchControlDirective
   ],
   imports: [
     BrowserModule,
@@ -48,7 +56,7 @@ import { APP_BASE_HREF } from '@angular/common';
   ],
   providers: [
     EnvironmentLoaderService,
-    ContentsControllerService,
+    ContentControllerService,
     { provide: APP_BASE_HREF, useValue: `/${window.location.pathname.split('/')[1] || ''}` }
   ],
   bootstrap: [AppComponent]

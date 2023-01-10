@@ -4,17 +4,7 @@
     background-color: rgb(0, 0, 0, 0.0) !important;
 }
 
-.dialog {
-    position: relative;
-    display: block;
-    padding: 0px;
-    margin: 0px;
-    width: 100%;
-    height: 100%;
-    background-color: rgb(0, 0, 0, 0.8);
-}
-
-.close-button {
+.close {
     position: fixed;
     float: right;
     top: 0px;
@@ -31,48 +21,53 @@
     z-index: 9999;
 }
 
-.close-button:hover {
+.close:hover {
     color: lightgrey;
     background-color: rgba(0, 0, 0, 0.8);
     transition: 800ms;
 }
 
-.close-icon {
+.close .close-icon {
     padding: 0px;
     margin: 0px;
     background-color: rgba(0, 0, 0, 0.0);
 }
 
-.hidden-scrollable {
+.show--hidden-scroll {
     overflow: hidden;
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
 }
 
-.hidden-scrollable::-webkit-scrollbar { /* Chrome */
+.show--hidden-scroll::-webkit-scrollbar { /* Chrome */
     display: none;
 }
 
-.content-area {
-    position: absolute;
-    background-color: transparent;
-    padding: 0px;
-    margin: 0px;
-}
-
-.content-area .content-view-list {
-    position: absolute;
-    display: grid;
-    grid-template-columns: 33.33333% 33.33333% 33.33333%;
-    /*grid-template-rows: 100%;*/
-    padding: 0px;
-    margin: 0px;
+.show {
+    position: relative;
     top: 0px;
     left: 0px;
-    transform: translateX(-33.33333%);
+    width: 100%;
+    height: 100%;
+    padding: 0px;
+    margin: 0px;
+    background-color: rgb(0, 0, 0, 0.8);
 }
 
-.content-area .content-view-list .content-view {
+.show .show__view {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    display: grid;
+    align-items: flex-start;
+    grid-template-columns: 33.3333333% 33.3333333% 33.3333333%;
+    transform: translateX(-33.3333333%);
+    padding: 0px;
+    margin: 0px;
+    background-color: transparent;
+}
+
+.show .show__view .show__content {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -81,30 +76,61 @@
     background-color: transparent;
 }
 
-.content-area .content-view-list .content-view img {
+.show .show__view .show__content img {
     object-fit: contain;
     padding: 0px;
     margin: 0px;
 }
 
-.content-area .content-view-list .content-view video {
+.show .show__view .show__content video {
     padding: 0px;
     margin: 0px;
 }
 
-.content-preview-list {
-    position: relative;
-    float: start;
+.show .show__thumbnail-whitespace {
+    width: 50%;
+}
+
+.show .show__thumbnail-view {
+    position: absolute;
     display: flex;
+    align-items: center;
     flex-wrap: nowrap;
     padding: 0px;
     margin: 0px;
+    box-sizing: border-box;
+    background-color: transparent;
 }
 
-.content-preview {
+.show .show__thumbnail-view .show__thumbnail {
+    display: flex;
+    align-items: center;
+    padding: 2px;
+    margin: 0px;
+    box-sizing: border-box;
+    background-color: transparent;
+}
+
+.show .show__thumbnail-view .show__thumbnail img {
+    border-radius: 2px;
     object-fit: cover;
     padding: 0px;
     margin: 0px;
+}
+
+.show .show__thumbnail-view .show__thumbnail video {
+    border-radius: 2px;
+    object-fit: cover;
+    padding: 0px;
+    margin: 0px;
+}
+
+.show .show__thumbnail-view .show__thumbnail img:hover {
+    cursor: pointer;
+}
+
+.show .show__thumbnail-view .show__thumbnail video:hover {
+    cursor: pointer;
 }
 
 .nocontent {

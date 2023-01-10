@@ -1,67 +1,49 @@
 # snowpic
-Simple web image viewer
+Simple web-based media viewer
 
 <img src="https://user-images.githubusercontent.com/118874393/204802281-0cf713d2-bd8d-4638-b456-3f171e3fee11.jpg" width="700px" />
 <img src="https://user-images.githubusercontent.com/118874393/204802310-da857614-6705-4339-8462-c60771759442.jpg" width="700px" />
 
 # Installation
 This is a Node.js app available through the npm registry.
-
 Before installing, download and install Node.js.
-
 Installation is is easily done using the npm install command:
-
 `$ npm i snowpic`
-
 The command probably downloads and installs snowpic under node_modules directory.
-
 You can leave snowpic there or move it to somewhere else.
-
 # Web Server Configuration
-
 This web app is originally designed to work on Nginx, however, using Nginx is not mandatory.
-
 But why Nginx?
-
 With a few config lines, Nginx provides autoindex that creates directories and files data list including useful information such as name, type and so on in the json format.
-
 - Properties: name, type, mtime, size
-
 - JSON Data Example:
 ```
 [
-{ "name":"node-modules", "type":"directory", "mtime":"Sat, 09 Apr 2019 08:51:52 GMT" },
-{ "name":"dist", "type":"directory", "mtime":"Sat, 09 Apr 2020 08:52:27 GMT" },
-{ "name":"helloworld", "type":"directory", "mtime":"Fri, 17 Feb 2018 22:27:21 GMT" },
-{ "name":"tools.zip", "type":"file", "mtime":"Sat, 16 Apr 2016 01:34:08 GMT", "size":121592817 },
-{ "name":"package.json", "type":"file", "mtime":"Sat, 16 Apr 2016 01:33:25 GMT", "size":4470 },
+	{ "name":"node-modules", "type":"directory", "mtime":"Sat, 09 Apr 2019 08:51:52 GMT" },
+	{ "name":"dist", "type":"directory", "mtime":"Sat, 09 Apr 2020 08:52:27 GMT" },
+	{ "name":"helloworld", "type":"directory", "mtime":"Fri, 17 Feb 2018 22:27:21 GMT" },
+	{ "name":"tools.zip", "type":"file", "mtime":"Sat, 16 Apr 2016 01:34:08 GMT", "size":121592817 },
+	{ "name":"package.json", "type":"file", "mtime":"Sat, 16 Apr 2016 01:33:25 GMT", "size":4470 },
 ]
 ```
-
 Note that all the images you want to browse are placed under a certain directory.
-
 Make sure you move all your images to a direcotry.
-
 Nginx will autoindex the directory and create directories and files information.
-
 Add the following lines to nginx.conf or another conf file under sites-available.
-
 ```
 server {
-  location / {
-    root [type here the full path of directory where contains index.html];
-  }
+	location / {
+		root [type here the full path of directory where contains index.html];
+	}
 
-  location [type here the directory name that contains image files ] {
-    root [type here the full path directory excluding the last directory name];
-    autoindex on;
-    autoindex_format json;
-  }
+	location [type here the directory name that contains image files ] {
+		root [type here the full path directory excluding the last directory name];
+		autoindex on;
+		autoindex_format json;
+	}
 }
 ```
-
 For example, if all your images are stored in the path of /media/storage/images, you want to set:
-
 ```
 location /images {
     root /media/storage;
@@ -69,13 +51,9 @@ location /images {
     autoindex_format json;
 }
 ```
-
 # Environment Configuration
-
 You need to set snowpic to know where to send a request to get directories and files data.
-
 Add these lines to environment.json file in assets directory.
-
 ```
 [
     {
@@ -102,31 +80,41 @@ Add these lines to environment.json file in assets directory.
     }
 ]
 ```
-
 contents_location must match the location configuration of your web server above.
-
 Do not add '/' character before and after contents_location.
-
 server_address means where you send a request to and get a response from.
-
 If your web server and image directory are under the same IP address, you can use localhost.
-
 Otherwise, type a specific IP address.
-
 protocol is either of http or https depending on your web server configuration.
-
-If you already set up SSL on the server, https is highly recommended.  
-
+If you already set up SSL on the server, https is highly recommended.
+# Path-independency Configuration
+If you want to deploy this application to serveral paths, it is now available. Without setting each base-href and rebuilding(ng build), you can deploy it under serveral sub-paths like as below.
+```
+http://localhost/a
+http://localhost/b
+http://localhost/c
+```
+You need to edit the web server configuration to specify the sub-paths you want to deploy under.
+```
+location [type here a sub-path where the app is installed] {
+	root [type here the full path of directory where contains index.html];
+}
+```
+For example, this configuration means that index.html of the app is under /var/www/snowpic/ directory and you can access it through *http(s)://url/snowpic*.
+```
+location /snowpic/ {
+	root /var/www;
+}
+```
 # Supported Media Formats
 Currently, snowpic supports both of image and video.
 - Supported image formats: jpg, jpeg, png, and gif
 - Supported video formats : mp4, ogg, webm
-
-# Issues
-
+# Supported Input Event handling
+For mobile, left and right touch slide events are implemented.
+For PC, keyboard input, touchpad and mouse wheel work as well.
+# CORS issue
 If there is a CORS issue, add the header information as well underneath what you put in the web server configuration.
-
 `add_header Access-Controll-Allow-Origin *;`
-
 # LICENSE
 <a href="https://github.com/KT-Um/core_gallery/wiki/MIT-License">MIT</a>

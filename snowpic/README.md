@@ -8,13 +8,16 @@ Simple web-based media viewer
 - Mobile, PC and TV compatible
 
 [Show image]
-![snowpic-show-image](https://user-images.githubusercontent.com/118874393/211566275-00104370-c540-43c4-9d5d-a659c90d6d1c.jpg)
+
+<img src="https://user-images.githubusercontent.com/118874393/211566275-00104370-c540-43c4-9d5d-a659c90d6d1c.jpg" width="700px" />
 
 [Browse directories and files]
-![snowpic-browse](https://user-images.githubusercontent.com/118874393/211566637-f15daf27-f561-49f6-af0e-47b26c2e7df4.jpg)
+
+<img src="https://user-images.githubusercontent.com/118874393/211566637-f15daf27-f561-49f6-af0e-47b26c2e7df4.jpg" width="700px" />
 
 [Show image on mobile]
-![snowpic-show-image-mobile-moon](https://user-images.githubusercontent.com/118874393/211568272-eb660420-458b-4ea2-bf8a-7e778f0b57d5.jpg)
+
+<img src="https://user-images.githubusercontent.com/118874393/211568272-eb660420-458b-4ea2-bf8a-7e778f0b57d5.jpg" width="300px" />
 
 ## It`s easy, just use it now
 - Finger touch, mouse wheel, keyboard and touchpad inputs are available
@@ -22,10 +25,12 @@ Simple web-based media viewer
 - Video control and autoplay are supported
 
 [Video play]
-![snowpic-show-video](https://user-images.githubusercontent.com/118874393/211565848-9398c982-b4f6-490e-b210-710ba148e9a6.jpg)
+
+<img src="https://user-images.githubusercontent.com/118874393/211565848-9398c982-b4f6-490e-b210-710ba148e9a6.jpg" width="700px" />
 
 [Video play on mobile]
-![snowpic-show-video-mobile](https://user-images.githubusercontent.com/118874393/211568315-a8d15e37-8b69-4c48-896a-2b6653d1442f.jpg)
+
+<img src="https://user-images.githubusercontent.com/118874393/211568315-a8d15e37-8b69-4c48-896a-2b6653d1442f.jpg" width="300px" />
 
 ## Easy to deploy
 - No server app required - Nginx, that's all!
@@ -115,7 +120,8 @@ Otherwise, type a specific IP address.
 protocol is either of http or https depending on your web server configuration.
 If you already set up SSL on the server, https is highly recommended.
 # Path-independency Configuration
-If you want to deploy this application to serveral paths, it is now available. Without setting each base-href and rebuilding(ng build), you can deploy it right away under serveral sub-paths like as below.
+If you want to deploy this application to serveral paths, it is now available.
+Without setting each base-href and rebuilding(ng build), you can deploy it right away under serveral sub-paths like as below.
 ```
 http://localhost/a
 http://localhost/b
@@ -134,7 +140,8 @@ location /snowpic/ {
 }
 ```
 # Supported Media Formats
-Currently, snowpic supports both of image and video. You can extend or shrink it. See Environment Configuration.
+Currently, snowpic supports both of image and video.
+You can extend or shrink it. See Environment Configuration.
 - Supported image formats: jpg, jpeg, png, and gif
 - Supported video formats : mp4, ogg, webm
 # Supported Input Event handling

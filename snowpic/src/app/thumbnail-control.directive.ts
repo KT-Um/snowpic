@@ -17,15 +17,15 @@ export class ThumbnailControlDirective {
 
     if (!this._content || !this.thumbnail) return;
     if (this._content.fileIndex === this.thumbnail.fileIndex) {
-      this.eventHandler.scaleDown();
-      this.eventHandler.scaleUp(this.elementRef.nativeElement);
+      this.eventHandler.scaleThumbnailDown();
+      this.eventHandler.scaleThumbnailUp(this.elementRef.nativeElement);
     }
   }
 
   @HostListener('click', ['$event'])
   private onClick(event: PointerEvent): void {
-    this.eventHandler.scaleDown();
-    this.eventHandler.scaleUp(this.elementRef.nativeElement);
+    this.eventHandler.scaleThumbnailDown();
+    this.eventHandler.scaleThumbnailUp(this.elementRef.nativeElement);
 
     this.contentChange.emit(this._content = this.thumbnail);
   }

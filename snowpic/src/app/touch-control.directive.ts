@@ -28,6 +28,7 @@ export class TouchControlDirective {
 
     const touch = event.touches[0] || event.changedTouches[0];
 
+    this.eventHandler.initView();
     this.eventHandler.slideEvent.startX = touch.pageX;
     this.eventHandler.slideEvent.lastX = touch.pageX;
     this.eventHandler.slideEvent.startEventTime = event.timeStamp;
@@ -46,15 +47,23 @@ export class TouchControlDirective {
       const elements = this.elements;
       if (elements) {
         const amountMovement = touch.pageX - this.eventHandler.slideEvent.startX;
-
-        if (amountMovement < 0 && !this.content.nextContent) return;
-        if (amountMovement < 0 && this.content.nextContent?.format === this.NO_SUPPORTED_FORMAT) return;
-        if (amountMovement > 0 && !this.content.previousContent) return;
-        if (amountMovement > 0 && this.content.previousContent?.format === this.NO_SUPPORTED_FORMAT) return;
+        if (amountMovement > 0) {
+          if (!this.content.previousContent || this.content.previousContent.format === this.NO_SUPPORTED_FORMAT) {
+            this.eventHandler.flinchLeft(elements[1].nativeElement);
+            return;
+          }
+        }
+        
+        if (amountMovement < 0) {
+          if (!this.content.nextContent || this.content.nextContent.format === this.NO_SUPPORTED_FORMAT) {
+            this.eventHandler.flinchRight(elements[1].nativeElement);
+            return;
+          }
+        }
 
         elements.forEach(element => {
           this.eventHandler.slide(element.nativeElement, amountMovement);
-        })
+        });
       }
     }
 
@@ -65,6 +74,10 @@ export class TouchControlDirective {
   private onTouchEnd(event: TouchEvent): void {
     if (event.touches.length > 1) return;
     if (!this.movementX || !this.content || !this.videosElements) return;
+
+    const elements = this.elements;
+    if (!elements) return;
+
     const touch = event.touches[0] || event.changedTouches[0];
 
     const amountMovement = touch.pageX - this.eventHandler.slideEvent.lastX;
@@ -72,32 +85,25 @@ export class TouchControlDirective {
     
     if (Math.abs(amountMovement) > this.AMOUNT_MOVEMENT) {
       if (movementDirection > 0 && amountMovement > 0) {
-        if (!this.content.previousContent) return;
-        if (this.content.previousContent && this.content.previousContent.format === this.NO_SUPPORTED_FORMAT) return;
+        if (this.content.previousContent && this.content.previousContent.format !== this.NO_SUPPORTED_FORMAT) {
+          if (this.eventHandler.isTwitched) this.eventHandler.resetFlinch(elements);
+          this.slidePrevious(parseInt(this.movementX), this.content, this.contentChange, this.videosElements);
+          return;
+        }
 
-        this.movePrevious(
-          parseInt(this.movementX),
-          this.content,
-          this.contentChange,
-          this.videosElements
-        );
+        this.eventHandler.flinchLeft(elements[1].nativeElement);
       } else if (movementDirection < 0 && amountMovement < 0) {
-        if (!this.content.nextContent) return;
-        if (this.content.nextContent && this.content.nextContent.format === this.NO_SUPPORTED_FORMAT) return;
+        if (this.content.nextContent && this.content.nextContent.format !== this.NO_SUPPORTED_FORMAT) {
+          if (this.eventHandler.isTwitched) this.eventHandler.resetFlinch(elements);
+          this.slideNext(parseInt(this.movementX), this.content, this.contentChange, this.videosElements);
+          return;
+        }
 
-        this.moveNext(
-          parseInt(this.movementX),
-          this.content,
-          this.contentChange,
-          this.videosElements
-        );
+        this.eventHandler.flinchRight(elements[1].nativeElement);
       }
-    } else {
-      const elements = this.elements;
-      if (elements) this.eventHandler.slideBack(elements);
     }
 
-    this.eventHandler.initView();
+    this.eventHandler.slideBack(elements);
   }
 
   private get elements(): ElementRef<HTMLElement>[] | undefined {
@@ -107,10 +113,10 @@ export class TouchControlDirective {
     return elements;
   }
 
-  private moveNext(movementX: number, content: Content, contentChange: EventEmitter<Content>, videosElementsToReset: QueryList<ElementRef<HTMLVideoElement>>): void {
+  private slideNext(movementX: number, content: Content, contentChange: EventEmitter<Content>, videosElementsToReset: QueryList<ElementRef<HTMLVideoElement>>): void {
     const elements = this.elements;
     if (elements) {
-      this.eventHandler.slideAndMoveNext(
+      this.eventHandler.slideNext(
         elements[1].nativeElement,
         elements[2].nativeElement,
         movementX,
@@ -121,10 +127,10 @@ export class TouchControlDirective {
     }
   }
 
-  private movePrevious(movementX: number, content: Content, contentChange: EventEmitter<Content>, videosElementsToReset: QueryList<ElementRef<HTMLVideoElement>>): void {
+  private slidePrevious(movementX: number, content: Content, contentChange: EventEmitter<Content>, videosElementsToReset: QueryList<ElementRef<HTMLVideoElement>>): void {
     const elements = this.elements;
     if (elements) {
-      this.eventHandler.slideAndMovePrevious(
+      this.eventHandler.slidePrevious(
         elements[1].nativeElement,
         elements[0].nativeElement,
         movementX,

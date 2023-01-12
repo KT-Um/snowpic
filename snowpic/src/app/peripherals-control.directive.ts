@@ -25,9 +25,9 @@ export class PeripheralsControlDirective {
     this.isWheeling = !this.isWheeling;
 
     if (event.deltaX > 0 || (event.deltaX === 0 && event.deltaY > 0)) {
-      this.moveNext();
+      this.slideNext();
     } else if (event.deltaX < 0 || (event.deltaX === 0 && event.deltaY < 0)) {
-      this.movePrevious();
+      this.slidePrevious();
     }
 
     setTimeout(() => { this.isWheeling = !this.isWheeling; }, this.eventHandler.WHEELING_DURATION);
@@ -39,10 +39,10 @@ export class PeripheralsControlDirective {
       case 'esc':
         break;
       case 'ArrowLeft':
-        this.movePrevious();
+        this.slidePrevious();
         break;
       case 'ArrowRight':
-        this.moveNext();
+        this.slideNext();
         break;
     }
   }
@@ -60,12 +60,12 @@ export class PeripheralsControlDirective {
     return elements;
   }
 
-  private moveNext(): void {
+  private slideNext(): void {
     if (this.isNotReady) return;
 
     const elements = this.elements;
     if (elements) {
-      this.eventHandler.slideAndMoveNext(
+      this.eventHandler.slideNext(
         elements[1].nativeElement,
         elements[2].nativeElement,
         parseInt(this.movementX!),
@@ -76,12 +76,12 @@ export class PeripheralsControlDirective {
     }
   }
 
-  private movePrevious(): void {
+  private slidePrevious(): void {
     if (this.isNotReady) return;
 
     const elements = this.elements;
     if (elements) {
-      this.eventHandler.slideAndMovePrevious(
+      this.eventHandler.slidePrevious(
         elements[1].nativeElement,
         elements[0].nativeElement,
         parseInt(this.movementX!),

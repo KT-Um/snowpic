@@ -18,12 +18,6 @@ export class AutoScrollDirective implements OnChanges {
         block: 'start',
         inline: 'start'
       });
-
-      /*this.elementRef.nativeElement.scrollIntoView({
-        behavior: "auto",
-        block: 'center',
-        inline: 'center'
-      });*/
     }
   }
 }

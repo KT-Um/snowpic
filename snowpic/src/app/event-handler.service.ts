@@ -19,13 +19,15 @@ export class EventHandlerService {
   private readonly EASING: string = 'ease-in-out';
   private readonly SCALE_UP: string = '1.2';
   private readonly SCALE_DOWN: string = '1';
+  private readonly LEFT_ORIGIN: string = '0 0';
+  private readonly RIGHT_ORIGIN: string = '100% 0';
 
   private scaledUpThumbnailList!: HTMLElement[];
-  private _thumbnailSlideEvent!: SlideEvent;
-
   private slideAnimationList!: AnimationPlayer[];
   private _slideEvent!: SlideEvent;
   private _isMoving!: boolean;
+  private _isFlinched!: boolean;
+  private transformOrigin!: string;
 
   constructor(private animationBuilder: AnimationBuilder) {
     this.initView();
@@ -33,9 +35,8 @@ export class EventHandlerService {
   }
 
   public initThumbnailView(): void {
-    if (this.scaledUpThumbnailList) this.scaleDown();
+    if (this.scaledUpThumbnailList) this.scaleThumbnailDown();
     this.scaledUpThumbnailList = [];
-    this._thumbnailSlideEvent = { count: 0, startX: 0, lastX: 0, startEventTime: 0 };
   }
 
   public initView(): void {
@@ -47,31 +48,76 @@ export class EventHandlerService {
     this.slideAnimationList = [];
     this._slideEvent = { count: 0, startX: 0, lastX: 0, startEventTime: 0 };
     this._isMoving = false;
+    this._isFlinched = false;
+    this.transformOrigin = '';
   }
 
   public get isMoving(): boolean {
     return this._isMoving;
   }
 
-  public get slideEvent() {
+  public get slideEvent(): SlideEvent {
     return this._slideEvent;
   }
 
-  public get thumbnailSlideEvent() {
-    return this._thumbnailSlideEvent;
+  public get isTwitched(): boolean {
+    return this._isFlinched;
   }
 
-  public slide(element: HTMLElement, x: number) {
-    this.doAnimation(element, x, this.ZERO_DURATION, true);
+  public flinchLeft(element: HTMLElement): void {
+    this.flinch(element, this.LEFT_ORIGIN);
   }
 
-  public slideBack(elements: ElementRef<HTMLElement>[]) {
+  public flinchRight(element: HTMLElement): void {
+    this.flinch(element, this.RIGHT_ORIGIN);
+  }
+
+  private flinch(element: HTMLElement, transformOrigin: string): void {
+    this.transformOrigin = transformOrigin;
+    const keyframes = new KeyframeEffect(
+      element,
+      [{ transform: `scaleX(1.04)`, transformOrigin: transformOrigin }],
+      { duration: this.DEFAULT_DURATION, fill: 'forwards' }
+    )
+
+    const animation = new Animation(keyframes, document.timeline);
+    animation.onfinish = () => { this._isFlinched = true; };
+    animation.play();
+  }
+
+  public resetFlinch(elements: ElementRef<HTMLElement>[]): void {
     elements.forEach(element => {
-      this.doAnimation(element.nativeElement, 0, this.DEFAULT_DURATION, false);
+      const keyframes = new KeyframeEffect(
+        element.nativeElement,
+        [{ transform: `scaleX(1)`, transformOrigin: this.transformOrigin }],
+        { duration: this.ZERO_DURATION, fill: 'forwards' }
+      )
+  
+      const animation = new Animation(keyframes, document.timeline);
+      animation.onfinish = () => { this._isFlinched = false; this.transformOrigin = ''; };
+      animation.play();
     });
   }
 
-  public slideAndMoveNext(
+  public slideBack(elements: ElementRef<HTMLElement>[]): void {
+    elements.forEach(element => {
+      const keyframes = new KeyframeEffect(
+        element.nativeElement,
+        [{ transform: `translateX(0px) scaleX(1)`, transformOrigin: this.transformOrigin }],
+        { duration: this.DEFAULT_DURATION, fill: 'forwards' }
+      )
+  
+      const animation = new Animation(keyframes, document.timeline);
+      animation.onfinish = () => { this.initView(); };
+      animation.play();
+    });
+  }
+
+  public slide(element: HTMLElement, x: number): void {
+    this.doAnimation(element, x, this.ZERO_DURATION, true);
+  }
+
+  public slideNext(
     currentElement: HTMLElement,
     nextElement: HTMLElement,
     movementX: number,  
@@ -92,7 +138,7 @@ export class EventHandlerService {
     }
   }
 
-  public slideAndMovePrevious(
+  public slidePrevious(
     currentElement: HTMLElement,
     previousElement: HTMLElement,
     movementX: number,
@@ -146,9 +192,7 @@ export class EventHandlerService {
 
   private doAnimation(element: HTMLElement, x: number, duration: number, isKeepAnimating: boolean, doAfterFinished?: Function): void {
     const player: AnimationPlayer = this.animationBuilder.build([
-      animate(`${duration}ms ${this.EASING}`, style({
-        transform: `translateX(${x}px)`
-      }))
+      animate(`${duration}ms ${this.EASING}`, style({ transform: `translateX(${x}px)` }))
     ]).create(element);
 
     player.onStart(() => { this._isMoving = true; });
@@ -174,7 +218,7 @@ export class EventHandlerService {
     player.play();
   }
 
-  public scaleUp(element: HTMLElement): void {
+  public scaleThumbnailUp(element: HTMLElement): void {
     this.scaledUpThumbnailList.push(element);
     const keyframes = new KeyframeEffect(
       element,
@@ -186,7 +230,7 @@ export class EventHandlerService {
     animation.play();
   }
 
-  public scaleDown(): void {
+  public scaleThumbnailDown(): void {
     while (this.scaledUpThumbnailList.length > 0) {
       const element = this.scaledUpThumbnailList.pop()!;
       const keyframes = new KeyframeEffect(

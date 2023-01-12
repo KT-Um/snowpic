@@ -1,0 +1,167 @@
+$close-color: rgb(50, 50, 50);
+$close-hover-color: lightgrey;
+$nocontent-icon-color: darkorange;
+$nocontent-head-color: white;
+$nocontent-body-color: lightgray;
+$mat-dialog-container-background-color: rgb(0, 0, 0, 0.0);
+$close-background-color: rgba(0, 0, 0, 0.2);
+$close-hover-background-color: rgba(0, 0, 0, 0.8);
+$close-icon-background-color: rgba(0, 0, 0, 0.0);
+$show-background-color: rgb(0, 0, 0, 0.8);
+$show__view-background-color: transparent;
+$show__content-background-color: transparent;
+$show__thumbnail-view-background-color: transparent;
+$show__thumbnail-background-color: transparent;
+$nocontent-background-color: white;
+
+::ng-deep {
+	mat-dialog-container {
+		margin: 0px !important;
+		padding: 0px !important;
+		background-color: $mat-dialog-container-background-color !important;
+	}
+}
+.close {
+	position: fixed;
+	float: right;
+	top: 0px;
+	right: 0px;
+	width: 48px;
+	height: 48px;
+	color: $close-color;
+	background-color: $close-background-color;
+	padding: 0px;
+	margin: 0px;
+	border: 0px;
+	cursor: pointer;
+	border-radius: 5px;
+	z-index: 9999;
+	&:hover {
+		color: $close-hover-color;
+		background-color: $close-hover-background-color;
+		transition: 800ms;
+	}
+	.close-icon {
+		padding: 0px;
+		margin: 0px;
+		background-color: $close-icon-background-color;
+	}
+}
+@mixin hidden-scroll {
+	overflow: hidden;
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+	&::-webkit-scrollbar {
+		display: none;
+	}
+}
+.show {
+    @include hidden-scroll();
+	position: relative;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	padding: 0px;
+	margin: 0px;
+	background-color: $show-background-color;
+	.show__view {
+		position: absolute;
+		top: 0px;
+		left: 0px;
+		display: grid;
+		align-items: flex-start;
+		grid-template-columns: 33.3333333% 33.3333333% 33.3333333%;
+		transform: translateX(-33.3333333%);
+		padding: 0px;
+		margin: 0px;
+		background-color: $show__view-background-color;
+		.show__content {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			padding: 0px;
+			margin: 0px;
+			background-color: $show__content-background-color;
+			img {
+				object-fit: contain;
+				padding: 0px;
+				margin: 0px;
+			}
+			video {
+				padding: 0px;
+				margin: 0px;
+			}
+		}
+	}
+	.show__thumbnail-whitespace {
+		width: 50%;
+	}
+	.show__thumbnail-view {
+		position: absolute;
+		display: flex;
+		align-items: center;
+		flex-wrap: nowrap;
+		padding: 0px;
+		margin: 0px;
+		box-sizing: border-box;
+		background-color: $show__thumbnail-view-background-color;
+		.show__thumbnail {
+			display: flex;
+			align-items: center;
+			padding: 2px;
+			margin: 0px;
+			box-sizing: border-box;
+			background-color: $show__thumbnail-background-color;
+			img {
+				border-radius: 2px;
+				object-fit: cover;
+				padding: 0px;
+				margin: 0px;
+				&:hover {
+					cursor: pointer;
+				}
+			}
+			video {
+				border-radius: 2px;
+				object-fit: cover;
+				padding: 0px;
+				margin: 0px;
+				&:hover {
+					cursor: pointer;
+				}
+			}
+		}
+	}
+}
+.nocontent {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	.warning {
+		display: block;
+		text-align: center;
+		.icon {
+			font-size: 100px;
+			display: inline;
+			color: $nocontent-icon-color;
+			margin: 20px;
+			background-color: $nocontent-background-color;
+		}
+		.head {
+			font-size: xx-large;
+			display: block;
+			color: $nocontent-head-color;
+			margin: 20px;
+		}
+		.body {
+			font-size: medium;
+			display: block;
+			color: $nocontent-body-color;
+			margin: 20px;
+		}
+	}
+}

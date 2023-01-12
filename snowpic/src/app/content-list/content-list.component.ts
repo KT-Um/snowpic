@@ -7,7 +7,7 @@ import { Environment, EnvironmentLoaderService } from '../environmentloader.serv
 @Component({
   selector: 'content-list',
   templateUrl: './content-list.component.html',
-  styleUrls: ['./content-list.component.css']
+  styleUrls: ['./content-list.component.scss']
 })
 export class ContentListComponent implements OnInit {
   private readonly NO_APP_NAME: string = '';

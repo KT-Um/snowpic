@@ -1,4 +1,4 @@
-<div class="show show--hidden-scroll" peripherals-control [(content)]="content" [movementX]="innerViewWidth" contenteditable="false" tabindex="0">
+<div class="show" peripherals-control [(content)]="content" [movementX]="innerViewWidth" contenteditable="false" tabindex="0">
     <div class="show__view" [ngStyle]="{'height': outerViewHeight, 'width': outerViewWidth}" touch-control [(content)]="content" [movementX]="innerViewWidth">
         <span class="show__content" *ngFor="let content of contentList" [ngSwitch]="content.format" [ngStyle]="{'height': innerViewHeight, 'width': innerViewWidth}">
             <img #origins *ngSwitchCase="imageFormat" [src]="content.src" [ngStyle]="{'height': height, 'width': width}" />

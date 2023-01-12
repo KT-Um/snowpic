@@ -1,0 +1,86 @@
+$path__icon-color: gray;
+$path__total-color: black;
+$browse__icons--displayed-color: #F8D775;
+$browse__icons--layered-color: #fae094;
+$browse__item-button-background-color: transparent;
+$browse__item-button-hover-background-color: aliceblue;
+
+.spinner {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+.path {
+    margin: 0px;
+	padding: 5px;
+	display: table;
+	.path__icon {
+		display: table-cell;
+		color: $path__icon-color;
+		font-size: medium;
+		vertical-align: middle;
+	}
+	.path__info {
+		display: table-cell;
+		color: $path__total-color;
+		font-size: medium;
+		vertical-align: middle;
+		text-align: left;
+		width: 100%;
+	}
+	.path__total {
+		display: table-cell;
+		color: $path__total-color;
+		font-size: small;
+		vertical-align: middle;
+		text-align: right;
+		width: 100%;
+	}
+}
+.browse {
+	padding: 0px;
+	margin: 0px;
+	.browse__item {
+		padding: 0px;
+		margin: -10px;
+		.browse__icons {
+			position: relative;
+		}
+		.browse__icons--displayed {
+			color: $browse__icons--displayed-color;
+			vertical-align: middle;
+			margin: 0px;
+			padding: 0px;
+		}
+		.browse__icons--layered {
+			color: $browse__icons--layered-color;
+            position: absolute;
+			top: 0;
+			left: 0;
+		}
+		.browse__icon--displayed {
+			color: $browse__icons--displayed-color;
+			vertical-align: middle;
+			padding: 0px;
+			margin: 0px;
+		}
+		.browse__item-button {
+			display: block;
+			width: 100%;
+			text-indent: 5px;
+			text-align: left;
+			padding: 0px;
+			margin: 0px;
+			background-color: $browse__item-button-background-color;
+			&:hover {
+				background-color: $browse__item-button-hover-background-color;
+			}
+		}
+		.browse__item-thumbnail-icon {
+			object-fit: cover;
+			width: 24px;
+			height: 24px;
+		}
+	}
+}

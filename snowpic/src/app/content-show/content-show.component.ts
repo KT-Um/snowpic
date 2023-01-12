@@ -6,7 +6,7 @@ import { Environment, EnvironmentLoaderService } from '../environmentloader.serv
 @Component({
   selector: 'content-show',
   templateUrl: './content-show.component.html',
-  styleUrls: ['./content-show.component.css'],
+  styleUrls: ['./content-show.component.scss'],
 })
 export class ContentShowComponent implements AfterViewInit {
   private readonly NO_CONTENT: Content = {

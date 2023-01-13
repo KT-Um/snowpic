@@ -24,6 +24,12 @@ export class ContentShowComponent implements AfterViewInit {
   private readonly TYPE_OGG: string = 'video/ogg';
   private readonly TYPE_WEBM: string = 'video/webm';
   private readonly NO_TYPE: string = '';
+
+  private readonly CONTENT_COUNT: number = 3;
+  private readonly CONTENT_MARGIN: number = 5;
+  private readonly MARGIN_COUNT: number = 3 * 2;
+  private readonly CONTENT_WIDTH: string = '100%';
+  private readonly CONTENT_HEIGHT: string = '100%';
   private readonly VIEW_TO_THUMBNAIL_RATIO: number = 0.9;
   private readonly THUMBNAIL_SCALE: number = 0.7;
   private readonly THUMBNAIL_PADDING: number = 4;
@@ -104,9 +110,9 @@ export class ContentShowComponent implements AfterViewInit {
     this._innerViewHeight = this.isShowThumbnails ? `${window.innerHeight * this.VIEW_TO_THUMBNAIL_RATIO}px` : `${window.innerHeight}px`;
     this._innerViewWidth = `${window.innerWidth}px`;
     this._outerViewHeight = `${this._outerViewHeightInNumber}px`;
-    this._outerViewWidth = `${window.innerWidth * 3}px`;
-    this._contentHeight = `100%`;
-    this._contentWidth = `100%`;
+    this._outerViewWidth = `${window.innerWidth * this.CONTENT_COUNT + this.CONTENT_MARGIN * this.MARGIN_COUNT}px`;
+    this._contentHeight = this.CONTENT_HEIGHT;
+    this._contentWidth = this.CONTENT_WIDTH;
     
     this._thumbnailViewHeightInNumber = window.innerHeight * (1 - this.VIEW_TO_THUMBNAIL_RATIO);
     this._thumbnailHeightInNumber = this._thumbnailViewHeightInNumber * this.THUMBNAIL_SCALE;

@@ -16,11 +16,13 @@ export class EventHandlerService {
   private readonly DEFAULT_DURATION: number = (screen.width > 600) ? 600 : 100;
   public readonly WHEELING_DURATION: number = this.DEFAULT_DURATION * 1.4;
   private readonly ZERO_DURATION: number = 0;
+  private readonly FLINCH_DURATION: number = 7000;
   private readonly EASING: string = 'ease-in-out';
   private readonly SCALE_UP: string = '1.2';
   private readonly SCALE_DOWN: string = '1';
-  private readonly LEFT_ORIGIN: string = '0 0';
+  private readonly LEFT_ORIGIN: string = '0% 0';
   private readonly RIGHT_ORIGIN: string = '100% 0';
+  private readonly FLINCH_MOVEMENT: number = 1.5;
 
   private scaledUpThumbnailList!: HTMLElement[];
   private slideAnimationList!: AnimationPlayer[];
@@ -65,19 +67,19 @@ export class EventHandlerService {
   }
 
   public flinchLeft(element: HTMLElement): void {
-    this.flinch(element, this.LEFT_ORIGIN);
+    this.flinch(element, this.FLINCH_MOVEMENT, this.LEFT_ORIGIN);
   }
 
   public flinchRight(element: HTMLElement): void {
-    this.flinch(element, this.RIGHT_ORIGIN);
+    this.flinch(element, this.FLINCH_MOVEMENT * -1, this.RIGHT_ORIGIN);
   }
 
-  private flinch(element: HTMLElement, transformOrigin: string): void {
+  private flinch(element: HTMLElement, flinchMovement: number, transformOrigin: string): void {
     this.transformOrigin = transformOrigin;
     const keyframes = new KeyframeEffect(
       element,
-      [{ transform: `scaleX(1.04)`, transformOrigin: transformOrigin }],
-      { duration: this.DEFAULT_DURATION, fill: 'forwards' }
+      [{ transform: `translateX(${flinchMovement}px) scaleX(1.01)`, transformOrigin: transformOrigin }],
+      { duration: this.FLINCH_DURATION, fill: 'forwards' }
     )
 
     const animation = new Animation(keyframes, document.timeline);
@@ -89,7 +91,7 @@ export class EventHandlerService {
     elements.forEach(element => {
       const keyframes = new KeyframeEffect(
         element.nativeElement,
-        [{ transform: `scaleX(1)`, transformOrigin: this.transformOrigin }],
+        [{ transform: `translateX(0px) scaleX(1)`, transformOrigin: this.transformOrigin }],
         { duration: this.ZERO_DURATION, fill: 'forwards' }
       )
   

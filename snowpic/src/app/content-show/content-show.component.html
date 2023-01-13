@@ -10,7 +10,7 @@
     </div>
     <div class="show__thumbnail-view" *ngIf="isShowThumbnails" [ngStyle]="{'height': thumbnailViewHeight, 'width': thumbnailViewWidth, 'padding-left': thumbnailViewLeftPadding, 'left': thumbnailViewLeft, 'top': thumbnailViewTop}" thumbnail-touch-control [(content)]="content">
         <span class="show__thumbnail" thumbnail-control [thumbnail]="thumbnail" [(content)]="content" *ngFor="let thumbnail of thumbnails" [ngSwitch]="thumbnail.format">
-            <img #thumbnails *ngSwitchCase="imageFormat" [src]="thumbnail.src" [ngStyle]="{'height': thumbnailHeight, 'width': thumbnailWidth}" />
+            <img #thumbnails *ngSwitchCase="imageFormat" [src]="thumbnail.src" [ngStyle]="{'height': thumbnailHeight, 'width': thumbnailWidth}"/>
             <video #thumbnails *ngSwitchCase="videoFormat" [ngStyle]="{'height': thumbnailHeight, 'width': thumbnailWidth}">
                 <source [src]="thumbnail.src" [type]="getVideoType(thumbnail)">
             </video>

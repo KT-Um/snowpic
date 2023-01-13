@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { windowWhen } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -9,5 +10,8 @@ export class AppComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    window.ondragstart = () => { return false; };
+    window.oncontextmenu = () => { return false; };
+  }
 }

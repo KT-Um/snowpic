@@ -13,7 +13,6 @@ export class ContentShowComponent implements AfterViewInit {
     fileIndex: 0, name: '', type: '', mtime: '', src: '', format: '', extension: '', nextContent: undefined, previousContent: undefined, autoplay: false
   }
 
-  //private readonly TOTAL_THUMBNAIL_COUNT: number = (screen.width > screen.height) ? screen.width / (screen.width / 10) * 2 + 1 : screen.height / (screen.height / 10) * 2 + 1;
   private readonly NO_SUPPORTED_FORMAT = '';
   private readonly IMAGE_FORMAT: string = 'image';
   private readonly VIDEO_FORMAT: string = 'video';
